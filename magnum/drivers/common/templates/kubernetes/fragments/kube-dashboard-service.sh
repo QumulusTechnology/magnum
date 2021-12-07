@@ -324,8 +324,8 @@ EOF
     # Deploy INFLUX AND GRAFANA
     if [ "$(echo $INFLUX_GRAFANA_DASHBOARD_ENABLED | tr '[:upper:]' '[:lower:]')" == "true" ]; then
         INFLUX_SINK="        - --sink=influxdb:http://monitoring-influxdb.kube-system.svc:8086"
-        INFLUX_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-influxdb-${ARCH}:v1.3.3"
-        GRAFANA_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-grafana-${ARCH}:v4.4.3"
+        INFLUX_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-influxdb-${ARCH}:v1.5.2"
+        GRAFANA_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-grafana-${ARCH}:v5.0.4"
 
         INFLUX_DEPLOY=/srv/magnum/kubernetes/influxdb.yaml
         GRAFANA_DEPLOY=/srv/magnum/kubernetes/grafana.yaml

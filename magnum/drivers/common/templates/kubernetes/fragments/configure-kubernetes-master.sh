@@ -195,8 +195,7 @@ ExecStart=/bin/bash -c '/usr/bin/podman run --name kubelet \\
     --volume /lib/modules:/lib/modules:ro \\
     --volume /run:/run \\
     --volume /dev:/dev \\
-    --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \\
-    --volume /sys/fs/cgroup/systemd:/sys/fs/cgroup/systemd \\
+    --volume /sys/fs/cgroup:/sys/fs/cgroup \\
     --volume /etc/pki/tls/certs:/usr/share/ca-certificates:ro \\
     --volume /var/lib/calico:/var/lib/calico \\
     --volume /var/lib/docker:/var/lib/docker \\
@@ -236,8 +235,7 @@ ExecStart=/bin/bash -c '/usr/bin/podman run --name kube-proxy \\
     --volume /usr/lib/os-release:/etc/os-release:ro \\
     --volume /etc/ssl/certs:/etc/ssl/certs:ro \\
     --volume /run:/run \\
-    --volume /sys/fs/cgroup:/sys/fs/cgroup:ro \\
-    --volume /sys/fs/cgroup/systemd:/sys/fs/cgroup/systemd \\
+    --volume /sys/fs/cgroup:/sys/fs/cgroup \\
     --volume /lib/modules:/lib/modules:ro \\
     --volume /etc/pki/tls/certs:/usr/share/ca-certificates:ro \\
     \${CONTAINER_INFRA_PREFIX:-\${HYPERKUBE_PREFIX}}hyperkube:\${KUBE_TAG} \\
@@ -314,7 +312,7 @@ KUBE_API_ARGS="$KUBE_API_ARGS --client-ca-file=$CERT_DIR/ca.crt"
 KUBE_API_ARGS="$KUBE_API_ARGS --service-account-key-file=${CERT_DIR}/service_account.key"
 KUBE_API_ARGS="$KUBE_API_ARGS --service-account-signing-key-file=${CERT_DIR}/service_account_private.key"
 KUBE_API_ARGS="$KUBE_API_ARGS --service-account-issuer=https://kubernetes.default.svc.cluster.local"
-KUBE_API_ARGS="$KUBE_API_ARGS --kubelet-certificate-authority=${CERT_DIR}/ca.crt --kubelet-client-certificate=${CERT_DIR}/server.crt --kubelet-client-key=${CERT_DIR}/server.key --kubelet-https=true"
+KUBE_API_ARGS="$KUBE_API_ARGS --kubelet-certificate-authority=${CERT_DIR}/ca.crt --kubelet-client-certificate=${CERT_DIR}/server.crt --kubelet-client-key=${CERT_DIR}/server.key"
 # Allow for metrics-server/aggregator communication
 KUBE_API_ARGS="${KUBE_API_ARGS} \
     --proxy-client-cert-file=${CERT_DIR}/front-proxy/server.crt \
