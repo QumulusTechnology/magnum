@@ -19,7 +19,7 @@ EOF
     cat << EOF >> ${HELM_CHART_DIR}/values.yaml
 metrics-server:
   image:
-    repository: ${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}metrics-server-${ARCH}
+    repository: ${CONTAINER_INFRA_PREFIX:-gcr.io/metrics-server/}metrics-server
   args:
     - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
 EOF
