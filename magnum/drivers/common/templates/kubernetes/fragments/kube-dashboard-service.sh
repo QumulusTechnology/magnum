@@ -15,7 +15,7 @@ if [ "$(echo $KUBE_DASHBOARD_ENABLED | tr '[:upper:]' '[:lower:]')" == "true" ];
 
     KUBE_DASH_DEPLOY=/srv/magnum/kubernetes/kubernetes-dashboard.yaml
 
-    [ -f ${KUBE_DASH_DEPLOY} ] || {
+    if [ ! -f ${KUBE_DASH_DEPLOY} ] ; then    
         echo "Writing File: $KUBE_DASH_DEPLOY"
         mkdir -p $(dirname ${KUBE_DASH_DEPLOY})
         cat << EOF > ${KUBE_DASH_DEPLOY}
@@ -323,8 +323,10 @@ spec:
         - name: tmp-volume
           emptyDir: {}
 EOF
+    fi
 
     kubectl apply --validate=false -f $KUBE_DASH_DEPLOY
 fi
+    
 
 printf "Finished running ${step}\n"
