@@ -32,7 +32,7 @@ data:
   # Configure the MTU to use for workload interfaces and tunnels.
   # By default, MTU is auto-detected, and explicitly setting this field should not be required.
   # You can override auto-detection by providing a non-zero value.
-  veth_mtu: "0"
+  veth_mtu: "1440"
 
   # The CNI network configuration to install on each node. The special
   # values in this config will be automatically populated.
@@ -991,7 +991,7 @@ spec:
                 type: boolean
               ipipMTU:
                 description: 'IPIPMTU is the MTU to set on the tunnel device. See
-                  Configuring MTU [Default: 1440]'
+                  Configuring MTU [Default: 1400]'
                 type: integer
               ipsetsRefreshInterval:
                 description: 'IpsetsRefreshInterval is the period at which Felix re-checks
@@ -1240,7 +1240,7 @@ spec:
                 type: boolean
               vxlanMTU:
                 description: 'VXLANMTU is the MTU to set on the tunnel device. See
-                  Configuring MTU [Default: 1440]'
+                  Configuring MTU [Default: 1400]'
                 type: integer
               vxlanPort:
                 type: integer
