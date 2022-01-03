@@ -32,7 +32,7 @@ data:
   # Configure the MTU to use for workload interfaces and tunnels.
   # By default, MTU is auto-detected, and explicitly setting this field should not be required.
   # You can override auto-detection by providing a non-zero value.
-  veth_mtu: "1440"
+  veth_mtu: "1400"
 
   # The CNI network configuration to install on each node. The special
   # values in this config will be automatically populated.
