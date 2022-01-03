@@ -23,7 +23,7 @@ write_files:
 
       KUBE_ADMISSION_CONTROL=""
       if [ -n "${ADMISSION_CONTROL_LIST}" ] && [ "${TLS_DISABLED}" == "False" ]; then
-          KUBE_ADMISSION_CONTROL="- --admission-control=${ADMISSION_CONTROL_LIST}"
+          KUBE_ADMISSION_CONTROL="- --enable-admission-plugins=${ADMISSION_CONTROL_LIST}"
       fi
 
       TLS_CERT_FILE=${KUBE_CERTS_PATH}/apiserver.pem
