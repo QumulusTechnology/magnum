@@ -857,27 +857,27 @@ parameters:
   csi_attacher_tag:
     type: string
     description: tag of csi attacher
-    default: v3.2.1
+    default: v3.1.0
 
   csi_provisioner_tag:
     type: string
     description: tag of csi provisioner
-    default: v2.2.2
+    default: v2.1.2
 
   csi_snapshotter_tag:
     type: string
     description: tag of csi snapshotter
-    default: v4.0.0
+    default: v3.0.3
 
   csi_resizer_tag:
     type: string
     description: tag of csi resizer
-    default: v1.2.0
+    default: v1.1.0
 
   csi_node_driver_registrar_tag:
     type: string
     description: tag of csi node driver registrar
-    default: v2.2.0
+    default: v2.1.0
 
   node_problem_detector_tag:
     type: string
