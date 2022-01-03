@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: node-problem-detector
-        image: ${_gcr_prefix}/node-problem-detector/node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
+        image: ${_gcr_prefix}node-problem-detector/node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
         command:
         - "/bin/sh"
         - "-c"
