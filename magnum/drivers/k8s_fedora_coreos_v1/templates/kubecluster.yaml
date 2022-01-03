@@ -513,13 +513,19 @@ parameters:
   kube_dashboard_version:
     type: string
     description: version of kubernetes dashboard used for kubernetes cluster
-    default: v2.0.0
+    default: v2.4.0
 
   metrics_scraper_tag:
     type: string
     description: >
       Tag of metrics-scraper for kubernetes dashboard.
-    default: v1.0.6
+    default: v1.0.7
+
+  kube_prometheus_stack_version:
+    type: string
+    description: >
+      version of kube-prometheus-stack.
+    default: v27.1.0
 
   insecure_registry_url:
     type: string
@@ -607,7 +613,7 @@ parameters:
     type: string
     description: >
       ingress controller backend to use
-    default: ""
+    default: "octavia"
 
   ingress_controller_role:
     type: string
@@ -620,7 +626,7 @@ parameters:
     description: Octavia ingress controller docker image tag.
       tag of the k8scloudprovider/octavia-ingress-controller container
       https://hub.docker.com/r/k8scloudprovider/octavia-ingress-controller/tags/
-    default: v1.20.2
+    default: v1.22.0
 
   kubelet_options:
     type: string
@@ -851,32 +857,32 @@ parameters:
   csi_attacher_tag:
     type: string
     description: tag of csi attacher
-    default: v3.1.0
+    default: v3.2.1
 
   csi_provisioner_tag:
     type: string
     description: tag of csi provisioner
-    default: v2.1.2
+    default: v2.2.2
 
   csi_snapshotter_tag:
     type: string
     description: tag of csi snapshotter
-    default: v2.1.2
+    default: v4.0.0
 
   csi_resizer_tag:
     type: string
     description: tag of csi resizer
-    default: v1.1.0
+    default: v1.2.0
 
   csi_node_driver_registrar_tag:
     type: string
     description: tag of csi node driver registrar
-    default: v1.1.0
+    default: v2.2.0
 
   node_problem_detector_tag:
     type: string
     description: tag of the node problem detector container
-    default: v0.6.2
+    default: v0.8.10
 
   nginx_ingress_controller_tag:
     type: string
@@ -898,7 +904,7 @@ parameters:
     description: tag of the autoscaler container
       tag of the openstackmagnum/cluster-autoscaler container
       https://hub.docker.com/r/openstackmagnum/cluster-autoscaler/tags/
-    default: v1.20.0
+    default: v1.22.0
 
   min_node_count:
     type: number
@@ -1267,6 +1273,7 @@ resources:
           flannel_tag: {get_param: flannel_tag}
           flannel_cni_tag: {get_param: flannel_cni_tag}
           kube_dashboard_version: {get_param: kube_dashboard_version}
+          kube_prometheus_stack_version: {get_param: kube_prometheus_stack_version}
           trustee_user_id: {get_param: trustee_user_id}
           trustee_password: {get_param: trustee_password}
           trust_id: {get_param: trust_id}

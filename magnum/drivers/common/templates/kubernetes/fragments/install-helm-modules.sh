@@ -88,4 +88,9 @@ EOF
     fi
 fi
 
+if [ "$(echo $KUBE_DASHBOARD_ENABLED | tr '[:upper:]' '[:lower:]')" == "true" ]; then
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack --version $KUBE_PROMETHEUS_STACK_VERSION
+fi
+
 echo "END: ${step}"
