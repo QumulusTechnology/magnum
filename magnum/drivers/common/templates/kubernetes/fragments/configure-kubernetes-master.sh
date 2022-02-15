@@ -59,7 +59,7 @@ EOF
 cat > /etc/kubernetes/apiserver <<EOF
 KUBE_ETCD_SERVERS="--etcd-servers=http://127.0.0.1:2379,http://127.0.0.1:4001"
 KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"
-KUBE_ADMISSION_CONTROL="--enable-admission-plugins=NodeRestriction,${ADMISSION_CONTROL_LIST}"
+KUBE_ADMISSION_CONTROL="--enable-admission-plugins=${ADMISSION_CONTROL_LIST}"
 KUBE_API_ARGS=""
 EOF
 
@@ -325,7 +325,7 @@ KUBE_API_ARGS="${KUBE_API_ARGS} \
 
 KUBE_ADMISSION_CONTROL=""
 if [ -n "${ADMISSION_CONTROL_LIST}" ] && [ "${TLS_DISABLED}" == "False" ]; then
-    KUBE_ADMISSION_CONTROL="--enable-admission-plugins=NodeRestriction,${ADMISSION_CONTROL_LIST}"
+    KUBE_ADMISSION_CONTROL="--enable-admission-plugins=${ADMISSION_CONTROL_LIST}"
 fi
 
 if [ "$(echo "${CLOUD_PROVIDER_ENABLED}" | tr '[:upper:]' '[:lower:]')" = "true" ]; then

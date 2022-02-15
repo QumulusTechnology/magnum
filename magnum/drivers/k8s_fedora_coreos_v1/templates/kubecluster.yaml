@@ -222,7 +222,7 @@ parameters:
     type: string
     description: >
       List of admission control plugins to activate
-    default: "PodSecurityPolicy,NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,StorageObjectInUseProtection,PersistentVolumeClaimResize,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,RuntimeClass"
+    default: "lifecycle,limitranger,serviceaccount,setdefault,resize,defaulttolerationseconds,mutatingwebhook,validatingwebhook,resourcequota,storageobjectinuseprotection,podpriority,nodetaint,runtimeclass,certapproval,certsigning,certsubjectrestriction,defaultingressclass,podsecurity"
 
   kube_allow_priv:
     type: string
