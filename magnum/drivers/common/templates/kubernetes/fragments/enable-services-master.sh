@@ -26,6 +26,10 @@ for action in enable restart; do
     done
 done
 
+sleep 10
+
+$ssh_cmd systemctl restart etcd
+
 # Label self as master
 until  [ "ok" = "$(kubectl get --raw='/healthz')" ] && \
     kubectl patch node ${INSTANCE_NAME} \

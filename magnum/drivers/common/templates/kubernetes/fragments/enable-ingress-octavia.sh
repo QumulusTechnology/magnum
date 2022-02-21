@@ -46,6 +46,7 @@ data:
     octavia:
       subnet-id: ${CLUSTER_SUBNET}
       floating-network-id: ${EXTERNAL_NETWORK_ID}
+      provider: amphora
 EOF
 )
 writeFile $OCTAVIA_INGRESS_CONTROLLER_CONFIGMAP "$OCTAVIA_INGRESS_CONTROLLER_CONFIGMAP_CONTENT"
