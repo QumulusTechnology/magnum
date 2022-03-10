@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: node-problem-detector
-        image: ${_gcr_prefix}node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
+        image: ${_gcr_prefix}node-problem-detector/node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
         command:
         - "/bin/sh"
         - "-c"
@@ -239,8 +239,7 @@ EOF
 
 function enable_magnum_auto_healer {
     echo "Installing magnum_auto_healer"
-    image_prefix=${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}
-    image_prefix=${image_prefix%/}
+    image_prefix="dniasoff"
     magnum_auto_healer_manifest=/srv/magnum/kubernetes/manifests/magnum_auto_healer.yaml
 
     [ -f ${magnum_auto_healer_manifest} ] || {

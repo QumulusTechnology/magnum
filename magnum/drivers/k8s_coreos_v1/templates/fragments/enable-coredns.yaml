@@ -158,5 +158,5 @@ write_files:
 
       curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /etc/kubernetes/addons/coredns-sa.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/serviceaccounts" > /dev/null
       curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /etc/kubernetes/addons/coredns-cm.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/configmaps" > /dev/null
-      curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /etc/kubernetes/addons/coredns-de.yaml)" "http://127.0.0.1:8080/apis/extensions/v1beta1/namespaces/kube-system/deployments" > /dev/null
+      curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /etc/kubernetes/addons/coredns-de.yaml)" "http://127.0.0.1:8080/apis/extensions/v1/namespaces/kube-system/deployments" > /dev/null
       curl --silent -H "Content-Type: application/yaml" -XPOST -d"$(cat /etc/kubernetes/addons/coredns-svc.yaml)" "http://127.0.0.1:8080/api/v1/namespaces/kube-system/services" > /dev/null
