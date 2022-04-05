@@ -36,9 +36,9 @@ conditions:
     - create_cluster_resources
     - is_worker
 
-  calico_v3_21:
+  calico_v3_3:
     yaql:
-      expression: $.data.calico_tag.startsWith("v3.21.")
+      expression: $.data.calico_tag.startsWith("v3.3.")
       data:
         calico_tag: {get_param: calico_tag}
 
@@ -460,21 +460,21 @@ parameters:
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.23.5-rancher1
 
   master_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.23.5-rancher1
 
   minion_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.23.5-rancher1
 
   cloud_provider_tag:
     type: string
@@ -495,7 +495,7 @@ parameters:
   coredns_tag:
     type: string
     description: tag for coredns
-    default: 1.8.6
+    default: 1.9.1
 
   flannel_tag:
     type: string
@@ -510,7 +510,7 @@ parameters:
   kube_version:
     type: string
     description: version of kubernetes used for kubernetes cluster
-    default: v1.23.3-rancher1
+    default: v1.23.5-rancher1
 
   kube_dashboard_version:
     type: string
@@ -582,12 +582,12 @@ parameters:
   calico_tag:
     type: string
     description: tag of the calico containers used to provision the calico node
-    default: v3.21.2
+    default: v3.22.1
 
   calico_kube_controllers_tag:
     type: string
     description: tag of the kube_controllers used to provision the calico node
-    default: v3.21.2
+    default: v3.22.1
 
   calico_ipv4pool:
     type: string
@@ -863,17 +863,17 @@ parameters:
   csi_snapshotter_tag:
     type: string
     description: tag of csi snapshotter
-    default: v3.0.3
+    default: v5.0.1
 
   csi_resizer_tag:
     type: string
     description: tag of csi resizer
-    default: v1.1.0
+    default: v1.4.0
 
   csi_node_driver_registrar_tag:
     type: string
     description: tag of csi node driver registrar
-    default: v2.1.0
+    default: v2.5.0
 
   node_problem_detector_tag:
     type: string
@@ -900,7 +900,7 @@ parameters:
     description: tag of the autoscaler container
       tag of the openstackmagnum/cluster-autoscaler container
       https://hub.docker.com/r/openstackmagnum/cluster-autoscaler/tags/
-    default: v1.22.0
+    default: v1.23.0
 
   min_node_count:
     type: number
@@ -967,7 +967,7 @@ parameters:
   containerd_version:
     type: string
     description: The containerd version to download from https://github.com/containerd/containerd/releases
-    default: '1.5.8'
+    default: '1.6.2'
 
   containerd_tarball_url:
     type: string
@@ -977,7 +977,7 @@ parameters:
   containerd_tarball_sha256:
     type: string
     description: sha256 of the target containerd tarball.
-    default: 'feeda3f563edf0294e33b6c4b89bd7dbe0ee182ca61a2f9b8c3de2766bcbc99b'
+    default: 'd01c593d4b520d6054e965fa6ac87ccff5f59da287bf534a4e33cce53436481e'
 
   post_install_manifest_url:
     type: string
@@ -1388,8 +1388,8 @@ resources:
             - get_file: ../../common/templates/kubernetes/fragments/kube-apiserver-to-kubelet-role.sh
             - get_file: ../../common/templates/kubernetes/fragments/core-dns-service.sh
             - if:
-                - calico_v3_21
-                - get_file: ../../common/templates/kubernetes/fragments/calico-service-v3-21-x.sh
+                - calico_v3_3
+                - get_file: ../../common/templates/kubernetes/fragments/calico-service-v3-3-x.sh
                 - get_file: ../../common/templates/kubernetes/fragments/calico-service.sh
             - get_file: ../../common/templates/kubernetes/fragments/flannel-service.sh
             - get_file: ../../common/templates/kubernetes/fragments/enable-helm-tiller.sh
