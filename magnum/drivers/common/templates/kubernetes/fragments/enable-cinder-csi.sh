@@ -40,6 +40,12 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["csinodes"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattachments/status"]
+    verbs: ["patch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -84,6 +90,9 @@ rules:
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotcontents"]
     verbs: ["get", "list"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -124,7 +133,7 @@ rules:
     verbs: ["get", "list", "watch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshotcontents"]
-    verbs: ["create", "get", "list", "watch", "update", "delete"]
+    verbs: ["create", "get", "list", "watch", "update", "delete", "patch"]
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots"]
     verbs: ["get", "list", "watch", "update"]
@@ -134,6 +143,12 @@ rules:
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
     verbs: ["create", "list", "watch", "delete"]
+  - apiGroups: ["snapshot.storage.k8s.io"]
+    resources: ["volumesnapshotcontents/status"]
+    verbs: ["update", "patch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -174,6 +189,12 @@ rules:
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "watch", "list", "delete", "update", "create"]
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -257,7 +278,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
         - name: csi-attacher
-          image: ${CONTAINER_INFRA_PREFIX:-quay.io/k8scsi/}csi-attacher:${CSI_ATTACHER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
           args:
             - "--v=5"
             - "--csi-address=\$(ADDRESS)"
@@ -273,7 +294,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: csi-provisioner
-          image: ${CONTAINER_INFRA_PREFIX:-quay.io/k8scsi/}csi-provisioner:${CSI_PROVISIONER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -288,7 +309,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: csi-snapshotter
-          image: ${CONTAINER_INFRA_PREFIX:-quay.io/k8scsi/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
           resources:
@@ -302,7 +323,7 @@ spec:
             - mountPath: /var/lib/csi/sockets/pluginproxy/
               name: socket-dir
         - name: csi-resizer
-          image: ${CONTAINER_INFRA_PREFIX:-quay.io/k8scsi/}csi-resizer:${CSI_RESIZER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
           args:
             - "--v=5"
             - "--csi-address=\$(ADDRESS)"
@@ -412,7 +433,7 @@ spec:
       hostNetwork: true
       containers:
         - name: node-driver-registrar
-          image: ${CONTAINER_INFRA_PREFIX:-quay.io/k8scsi/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--kubelet-registration-path=\$(DRIVER_REG_SOCK_PATH)"
@@ -514,6 +535,7 @@ kind: CSIDriver
 metadata:
   name: cinder.csi.openstack.org
 spec:
+  fsGroupPolicy: File
   attachRequired: true
   podInfoOnMount: true
   volumeLifecycleModes:
@@ -547,5 +569,19 @@ stringData:
 EOF
 
     kubectl apply -f ${CINDER_CSI_DEPLOY}
+
+    cat <<EOF | kubectl apply -f -
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: standard
+provisioner: cinder.csi.openstack.org
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+EOF
+
 fi
 printf "Finished running ${step}\n"
