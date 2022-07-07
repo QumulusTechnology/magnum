@@ -228,11 +228,11 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["nodes"]
-    verbs: ["list"]
+    verbs: ["list", "watch"]
   - apiGroups: [""]
     resources: ["replicationcontrollers/scale"]
     verbs: ["get", "update"]
-  - apiGroups: ["extensions"]
+  - apiGroups: ["extensions","apps"]
     resources: ["deployments/scale", "replicasets/scale"]
     verbs: ["get", "update"]
 # Remove the configmaps rule once below issue is fixed:
@@ -280,7 +280,7 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
       - name: autoscaler
-        image: ${_autoscaler_prefix}cluster-proportional-autoscaler-${ARCH}:1.1.2
+        image: ${_autoscaler_prefix}cluster-proportional-autoscaler-${ARCH}:1.8.1
         resources:
             requests:
                 cpu: "20m"
