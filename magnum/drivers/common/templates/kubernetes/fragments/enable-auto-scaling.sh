@@ -137,6 +137,9 @@ rules:
     verbs:
       - list
       - watch
+      - get
+      - create
+      - update
   - apiGroups:
     - coordination.k8s.io
     resources:
