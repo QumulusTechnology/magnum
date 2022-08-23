@@ -136,10 +136,7 @@ rules:
       - configmaps
     verbs:
       - list
-      - watch
       - get
-      - create
-      - update
   - apiGroups:
     - coordination.k8s.io
     resources:
@@ -222,6 +219,45 @@ subjects:
     name: cluster-autoscaler-account
     namespace: kube-system
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cluster-autoscaler
+  namespace: kube-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      - cluster-autoscaler-status
+    verbs:
+      - list
+      - watch
+      - get
+      - create
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cluster-autoscaler-rolebinding
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cluster-autoscaler
+subjects:
+  - kind: ServiceAccount
+    name: cluster-autoscaler-account
+    namespace: kube-system
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -277,10 +313,16 @@ spec:
             - --scale-down-unneeded-time=10m
             - --scale-down-delay-after-failure=3m
             - --scale-down-delay-after-add=10m
+            - --v=2
           resources:
             requests:
               cpu: 100m
               memory: 300Mi
+          env:
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: 8085
           ports:
           - containerPort: 8085
             name: metrics
@@ -299,6 +341,36 @@ spec:
         - name: cloud-config
           secret:
             secretName: cluster-autoscaler-cloud-config
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: cluster-autoscaler
+  name: cluster-autoscaler
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: cluster-autoscaler
+  maxUnavailable: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cluster-autoscaler
+  name: cluster-autoscaler
+  namespace: kube-system
+spec:
+  ports:
+    - port: 8085
+      protocol: TCP
+      targetPort: 8085
+      name: http
+  selector:
+    app: cluster-autoscaler
+  type: "ClusterIP"
 EOF
     }
 

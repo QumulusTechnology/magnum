@@ -3817,10 +3817,9 @@ rules:
       - get
       - list
       - watch
-  # IPAM resources are manipulated when nodes are deleted.
+  # IPAM resources are manipulated in response to node and block updates, as well as periodic triggers.
   - apiGroups: ["crd.projectcalico.org"]
     resources:
-      - ippools
       - ipreservations
     verbs:
       - list
@@ -3835,6 +3834,13 @@ rules:
       - create
       - update
       - delete
+      - watch
+  # Pools are watched to maintain a mapping of blocks to IP pools.
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - ippools
+    verbs:
+      - list
       - watch
   # kube-controllers manages hostendpoints.
   - apiGroups: ["crd.projectcalico.org"]
@@ -3852,8 +3858,10 @@ rules:
       - clusterinformations
     verbs:
       - get
+      - list
       - create
       - update
+      - watch
   # KubeControllersConfiguration is where it gets its config
   - apiGroups: ["crd.projectcalico.org"]
     resources:
@@ -3881,8 +3889,6 @@ subjects:
   name: calico-kube-controllers
   namespace: kube-system
 ---
-
----
 # Source: calico/templates/calico-node-rbac.yaml
 # Include a clusterrole for the calico-node DaemonSet,
 # and bind it to the calico-node serviceaccount.
@@ -3891,6 +3897,14 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: calico-node
 rules:
+  # Used for creating service account tokens to be used by the CNI plugin
+  - apiGroups: [""]
+    resources:
+      - serviceaccounts/token
+    resourceNames:
+      - calico-node
+    verbs:
+      - create
   # The CNI plugin needs to get pods, nodes, and namespaces.
   - apiGroups: [""]
     resources:
@@ -4020,11 +4034,14 @@ rules:
       - create
       - update
       - delete
+  # The CNI plugin and calico/node need to be able to create a default
+  # IPAMConfiguration
   - apiGroups: ["crd.projectcalico.org"]
     resources:
       - ipamconfigs
     verbs:
       - get
+      - create
   # Block affinities must also be watchable by confd for route aggregation.
   - apiGroups: ["crd.projectcalico.org"]
     resources:
@@ -4038,7 +4055,6 @@ rules:
       - daemonsets
     verbs:
       - get
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

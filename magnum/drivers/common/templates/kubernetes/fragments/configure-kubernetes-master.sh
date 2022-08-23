@@ -429,7 +429,7 @@ sed -i '
 sed -i '/^KUBE_SCHEDULER_ARGS=/ s#=.*#="--leader-elect=true --kubeconfig=/etc/kubernetes/admin.conf"#' /etc/kubernetes/scheduler
 
 $ssh_cmd mkdir -p /etc/kubernetes/manifests
-KUBELET_ARGS="--register-node=true --pod-manifest-path=/etc/kubernetes/manifests --hostname-override=${INSTANCE_NAME}"
+KUBELET_ARGS="--resolv-conf=/run/systemd/resolve/resolv.conf --register-node=true --pod-manifest-path=/etc/kubernetes/manifests --hostname-override=${INSTANCE_NAME}"
 KUBELET_ARGS="${KUBELET_ARGS} --pod-infra-container-image=${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}pause:3.1"
 KUBELET_ARGS="${KUBELET_ARGS} --cluster_dns=${DNS_SERVICE_IP} --cluster_domain=${DNS_CLUSTER_DOMAIN}"
 KUBELET_ARGS="${KUBELET_ARGS} --volume-plugin-dir=/var/lib/kubelet/volumeplugins"
