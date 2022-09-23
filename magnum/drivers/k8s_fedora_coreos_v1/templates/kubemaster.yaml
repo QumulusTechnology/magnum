@@ -592,6 +592,18 @@ parameters:
     description: >
       true if the auto scaling feature should be enabled
 
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+    default:
+      false
+
+  vault_url:
+    type: string
+    description: >
+      vault server url
+
   cinder_csi_enabled:
     type: boolean
     description: >
@@ -903,6 +915,8 @@ resources:
                   "$AUTO_HEALING_CONTROLLER": {get_param: auto_healing_controller}
                   "$MAGNUM_AUTO_HEALER_TAG": {get_param: magnum_auto_healer_tag}
                   "$AUTO_SCALING_ENABLED": {get_param: auto_scaling_enabled}
+                  "$VAULT_SSH_ENABLED": {get_param: vault_ssh_enabled}
+                  "$VAULT_URL": {get_param: vault_url}
                   "$CINDER_CSI_ENABLED": {get_param: cinder_csi_enabled}
                   "$CINDER_CSI_PLUGIN_TAG": {get_param: cinder_csi_plugin_tag}
                   "$CSI_ATTACHER_TAG": {get_param: csi_attacher_tag}
@@ -942,6 +956,8 @@ resources:
                   $configure_docker_storage_driver: {get_file: ../../common/templates/fragments/configure_docker_storage_driver_fedora_coreos.sh}
             - get_file: ../../common/templates/kubernetes/fragments/enable-services-master.sh
             - get_file: ../../common/templates/kubernetes/fragments/add-proxy.sh
+            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
+            - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
 
   master_config_deployment:
     type: OS::Heat::SoftwareDeployment

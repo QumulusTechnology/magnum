@@ -331,6 +331,18 @@ parameters:
       The service to be deployed for auto-healing.
     default: "draino"
 
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+    default:
+      false
+
+  vault_url:
+    type: string
+    description: >
+      vault server url
+
   npd_enabled:
     type: boolean
     description: >
@@ -506,6 +518,8 @@ resources:
                   $HEAT_CONTAINER_AGENT_TAG: {get_param: heat_container_agent_tag}
                   $AUTO_HEALING_ENABLED: {get_param: auto_healing_enabled}
                   $AUTO_HEALING_CONTROLLER: {get_param: auto_healing_controller}
+                  $VAULT_SSH_ENABLED: {get_param: vault_ssh_enabled}
+                  $VAULT_URL: {get_param: vault_url}
                   $NPD_ENABLED: {get_param: npd_enabled}
                   $NODEGROUP_ROLE: {get_param: nodegroup_role}
                   $NODEGROUP_NAME: {get_param: nodegroup_name}
@@ -526,6 +540,9 @@ resources:
                   $configure_docker_storage_driver: {get_file: ../../common/templates/fragments/configure_docker_storage_driver_fedora_coreos.sh}
             - get_file: ../../common/templates/kubernetes/fragments/enable-services-minion.sh
             - get_file: ../../common/templates/fragments/enable-docker-registry.sh
+            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
+            - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
+
 
   node_config_deployment:
     type: OS::Heat::SoftwareDeployment

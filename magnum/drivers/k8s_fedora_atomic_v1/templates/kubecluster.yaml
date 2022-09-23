@@ -1299,6 +1299,8 @@ resources:
           auto_healing_controller: {get_param: auto_healing_controller}
           magnum_auto_healer_tag: {get_param: magnum_auto_healer_tag}
           auto_scaling_enabled: {get_param: auto_scaling_enabled}
+          vault_ssh_enabled: {get_param: vault_ssh_enabled}
+          vault_url: {get_param: vault_url}
           cinder_csi_enabled: {get_param: cinder_csi_enabled}
           cinder_csi_plugin_tag: {get_param: cinder_csi_plugin_tag}
           csi_attacher_tag: {get_param: csi_attacher_tag}

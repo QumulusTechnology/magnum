@@ -854,6 +854,18 @@ parameters:
     default:
       false
 
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+    default:
+      false
+
+  vault_url:
+    type: string
+    description: >
+      vault server url
+
   cinder_csi_enabled:
     type: boolean
     description: >
@@ -1377,6 +1389,8 @@ resources:
           auto_healing_controller: {get_param: auto_healing_controller}
           magnum_auto_healer_tag: {get_param: magnum_auto_healer_tag}
           auto_scaling_enabled: {get_param: auto_scaling_enabled}
+          vault_ssh_enabled: {get_param: vault_ssh_enabled}
+          vault_url: {get_param: vault_url}
           cinder_csi_enabled: {get_param: cinder_csi_enabled}
           cinder_csi_plugin_tag: {get_param: cinder_csi_plugin_tag}
           csi_attacher_tag: {get_param: csi_attacher_tag}
@@ -1570,6 +1584,8 @@ resources:
           octavia_lb_healthcheck: {get_param: octavia_lb_healthcheck}
           heat_container_agent_tag: {get_param: heat_container_agent_tag}
           auto_healing_enabled: {get_param: auto_healing_enabled}
+          vault_ssh_enabled: {get_param: vault_ssh_enabled}
+          vault_url: {get_param: vault_url}
           npd_enabled: {get_param: npd_enabled}
           auto_healing_controller: {get_param: auto_healing_controller}
           ostree_remote: {get_param: ostree_remote}
