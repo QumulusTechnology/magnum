@@ -540,8 +540,9 @@ resources:
                   $configure_docker_storage_driver: {get_file: ../../common/templates/fragments/configure_docker_storage_driver_fedora_coreos.sh}
             - get_file: ../../common/templates/kubernetes/fragments/enable-services-minion.sh
             - get_file: ../../common/templates/fragments/enable-docker-registry.sh
-            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
             - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
+            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
+            
 
 
   node_config_deployment:

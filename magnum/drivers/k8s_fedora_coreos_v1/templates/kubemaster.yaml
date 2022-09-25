@@ -956,8 +956,8 @@ resources:
                   $configure_docker_storage_driver: {get_file: ../../common/templates/fragments/configure_docker_storage_driver_fedora_coreos.sh}
             - get_file: ../../common/templates/kubernetes/fragments/enable-services-master.sh
             - get_file: ../../common/templates/kubernetes/fragments/add-proxy.sh
-            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
             - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
+            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
 
   master_config_deployment:
     type: OS::Heat::SoftwareDeployment

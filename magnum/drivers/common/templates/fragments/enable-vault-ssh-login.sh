@@ -3,21 +3,27 @@ printf "Starting to run ${step}\n"
 
 . /etc/sysconfig/heat-params
 
+ssh_cmd="ssh -F /srv/magnum/.ssh/config root@localhost"
+
 vault_ssh_enabled=$(echo $VAULT_SSH_ENABLED | tr '[:upper:]' '[:lower:]')
 vault_url=$(echo $VAULT_URL | tr '[:upper:]' '[:lower:]')
 
 
+
 if [[ "${vault_ssh_enabled}" = "true" && -n "${vault_url}" ]]; then
 
+mkdir -p /etc/vault-ssh-helper.d/
+
 if [ ! -f /usr/local/bin/vault-ssh-helper ]; then
-    curl -s -o /usr/local/bin/vault-ssh-helper https://qumulusglobalprod.blob.core.windows.net/public-files/vault-ssh-helper
-    chmod 0755 /usr/local/bin/vault-ssh-helper
-    chown root:root /usr/local/bin/vault-ssh-helper
+    curl -s -o /etc/vault-ssh-helper.d/vault-ssh-helper https://qumulusglobalprod.blob.core.windows.net/public-files/vault-ssh-helper
+    chmod 0755 /etc/vault-ssh-helper.d/vault-ssh-helper
+    chown root:root /etc/vault-ssh-helper.d/vault-ssh-helper
 fi
 
 PROJECT_ID=$(curl -s http://169.254.169.254/openstack/2018-08-27/meta_data.json | awk -F'"project_id": "' '{print $2}' | awk -F'"' '{print $1}')
 
-mkdir -p /etc/vault-ssh-helper.d/
+
+
 
 cat << EOF > /etc/vault-ssh-helper.d/config.hcl
 vault_addr = "${vault_url}"
@@ -28,7 +34,7 @@ EOF
 
 sed -i '/^\@include common-auth$/s/^/#/' /etc/pam.d/sshd
 sed -i '/^auth       substack     password-auth$/s/^/#/' /etc/pam.d/sshd
-grep -qxF 'auth requisite pam_exec.so expose_authtok log=/var/log/vault_ssh.log /usr/local/bin/vault-ssh-helper -config=/etc/vault-ssh-helper.d/config.hcl' /etc/pam.d/sshd || echo 'auth requisite pam_exec.so expose_authtok log=/var/log/vault_ssh.log /usr/local/bin/vault-ssh-helper -config=/etc/vault-ssh-helper.d/config.hcl' >> /etc/pam.d/sshd
+grep -qxF 'auth requisite pam_exec.so expose_authtok log=/var/log/vault_ssh.log /etc/vault-ssh-helper.d/vault-ssh-helper -config=/etc/vault-ssh-helper.d/config.hcl' /etc/pam.d/sshd || echo 'auth requisite pam_exec.so expose_authtok log=/var/log/vault_ssh.log /etc/vault-ssh-helper.d/vault-ssh-helper -config=/etc/vault-ssh-helper.d/config.hcl' >> /etc/pam.d/sshd
 
 NOT_SET_PASS="use_first_pass "
 
@@ -52,8 +58,9 @@ change_line_sshd UsePAM yes
 change_line_sshd MaxAuthTries 15
 change_line_sshd PermitRootLogin yes
 
-SSHD_PID=$(ps -ef | grep "/usr/sbin/sshd" | grep -v grep | awk '{print $2}')
-/usr/bin/kill -HUP $SSHD_PID
+$ssh_cmd systemctl reload sshd
+
+sleep 5
 
 
 
