@@ -603,6 +603,22 @@ parameters:
     type: string
     description: >
       vault server url
+    default:
+      ""
+      
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+    default:
+      ""
+
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+    default:
+      ""
 
   cinder_csi_enabled:
     type: boolean
@@ -921,6 +937,8 @@ resources:
                   "$MAGNUM_AUTO_HEALER_TAG": {get_param: magnum_auto_healer_tag}
                   "$AUTO_SCALING_ENABLED": {get_param: auto_scaling_enabled}
                   "$VAULT_SSH_ENABLED": {get_param: vault_ssh_enabled}
+                  "$VAULT_MOUNT_POINT": {get_param: vault_mount_point}
+                  "$VAULT_ALLOWED_ROLES": {get_param: vault_allowed_roles}
                   "$VAULT_URL": {get_param: vault_url}
                   "$CINDER_CSI_ENABLED": {get_param: cinder_csi_enabled}
                   "$CINDER_CSI_PLUGIN_TAG": {get_param: cinder_csi_plugin_tag}

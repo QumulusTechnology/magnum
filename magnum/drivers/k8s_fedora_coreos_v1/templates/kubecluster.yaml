@@ -865,6 +865,22 @@ parameters:
     type: string
     description: >
       vault server url
+    default:
+      ""
+
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+    default:
+      ""
+
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+    default:
+      ""
 
   cinder_csi_enabled:
     type: boolean
@@ -904,6 +920,12 @@ parameters:
     type: string
     description: tag of csi node driver registrar
     default: v2.5.1
+
+  csi_liveness_probe_tag:
+    type: string
+    description: tag of cinder csi liveness probe
+      tag of the k8s.gcr.io/sig-storage/liveness-probe container
+    default: v2.5.0
 
   node_problem_detector_tag:
     type: string
@@ -1391,6 +1413,8 @@ resources:
           auto_scaling_enabled: {get_param: auto_scaling_enabled}
           vault_ssh_enabled: {get_param: vault_ssh_enabled}
           vault_url: {get_param: vault_url}
+          vault_mount_point: {get_param: vault_mount_point}
+          vault_allowed_roles: {get_param: vault_allowed_roles}
           cinder_csi_enabled: {get_param: cinder_csi_enabled}
           cinder_csi_plugin_tag: {get_param: cinder_csi_plugin_tag}
           csi_attacher_tag: {get_param: csi_attacher_tag}
@@ -1587,6 +1611,8 @@ resources:
           auto_healing_enabled: {get_param: auto_healing_enabled}
           vault_ssh_enabled: {get_param: vault_ssh_enabled}
           vault_url: {get_param: vault_url}
+          vault_mount_point: {get_param: vault_mount_point}
+          vault_allowed_roles: {get_param: vault_allowed_roles}
           npd_enabled: {get_param: npd_enabled}
           auto_healing_controller: {get_param: auto_healing_controller}
           ostree_remote: {get_param: ostree_remote}

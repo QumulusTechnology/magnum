@@ -12,10 +12,10 @@ ssh_cmd="ssh -F /srv/magnum/.ssh/config root@localhost"
 
 vault_ssh_enabled=$(echo $VAULT_SSH_ENABLED | tr '[:upper:]' '[:lower:]')
 vault_url=$(echo $VAULT_URL | tr '[:upper:]' '[:lower:]')
+vault_mount_point="${VAULT_MOUNT_POINT}"
+vault_allowed_roles="${VAULT_ALLOWED_ROLES}"
 
-
-if [[ "${vault_ssh_enabled}" = "true" && -n "${vault_url}" ]]; then
-
+if [ "${vault_ssh_enabled}" = "true" ] && [ -n "${vault_url}" ] && [ -n "${vault_mount_point}" ]; then
 
 # Just used to get a guaranteed empty Docker context dir
 empty_dir="$(mktemp -d)"

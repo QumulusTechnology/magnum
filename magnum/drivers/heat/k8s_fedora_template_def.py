@@ -124,6 +124,7 @@ class K8sFedoraTemplateDefinition(k8s_template_def.K8sTemplateDefinition):
                       'auto_healing_enabled', 'auto_scaling_enabled',
                       'auto_healing_controller', 'magnum_auto_healer_tag',
                       'vault_ssh_enabled', 'vault_url',
+                      'vault_allowed_roles', 'vault_mount_point',
                       'draino_tag', 'autoscaler_tag',
                       'min_node_count', 'max_node_count', 'npd_enabled',
                       'ostree_remote', 'ostree_commit',

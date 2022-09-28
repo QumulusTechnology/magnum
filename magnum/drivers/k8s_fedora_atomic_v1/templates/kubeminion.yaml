@@ -461,6 +461,8 @@ resources:
                   $AUTO_HEALING_ENABLED: {get_param: auto_healing_enabled}
                   $AUTO_HEALING_CONTROLLER: {get_param: auto_healing_controller}
                   $VAULT_SSH_ENABLED: {get_param: vault_ssh_enabled}
+                  $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
+                  $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}
                   $VAULT_URL: {get_param: vault_url}
                   $NPD_ENABLED: {get_param: npd_enabled}
                   $NODEGROUP_ROLE: {get_param: nodegroup_role}

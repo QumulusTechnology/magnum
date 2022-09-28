@@ -342,6 +342,22 @@ parameters:
     type: string
     description: >
       vault server url
+    default:
+      ""
+
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+    default:
+      ""
+
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+    default:
+      ""
 
   npd_enabled:
     type: boolean
@@ -520,6 +536,8 @@ resources:
                   $AUTO_HEALING_CONTROLLER: {get_param: auto_healing_controller}
                   $VAULT_SSH_ENABLED: {get_param: vault_ssh_enabled}
                   $VAULT_URL: {get_param: vault_url}
+                  $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
+                  $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}
                   $NPD_ENABLED: {get_param: npd_enabled}
                   $NODEGROUP_ROLE: {get_param: nodegroup_role}
                   $NODEGROUP_NAME: {get_param: nodegroup_name}
@@ -542,7 +560,7 @@ resources:
             - get_file: ../../common/templates/fragments/enable-docker-registry.sh
             - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
             - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
-            
+
 
 
   node_config_deployment:
