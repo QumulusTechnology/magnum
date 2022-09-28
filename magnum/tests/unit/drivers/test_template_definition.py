@@ -600,6 +600,8 @@ class AtomicK8sTemplateDefinitionTestCase(BaseK8sTemplateDefinitionTestCase):
             'csi_resizer_tag')
         csi_node_driver_registrar_tag = mock_cluster.labels.get(
             'csi_node_driver_registrar_tag')
+        csi_liveness_probe_tag = mock_cluster.labels.get(
+            'csi_liveness_probe_tag')
         draino_tag = mock_cluster.labels.get('draino_tag')
         autoscaler_tag = mock_cluster.labels.get('autoscaler_tag')
         min_node_count = mock_cluster.labels.get('min_node_count')
@@ -624,7 +626,8 @@ class AtomicK8sTemplateDefinitionTestCase(BaseK8sTemplateDefinitionTestCase):
             'master_lb_allowed_cidrs')
         octavia_provider = mock_cluster.labels.get('octavia_provider')
         octavia_lb_algorithm = mock_cluster.labels.get('octavia_lb_algorithm')
-        octavia_lb_healthcheck = mock_cluster.labels.get('octavia_lb_healthcheck')
+        octavia_lb_healthcheck = mock_cluster.labels.get(
+                'octavia_lb_healthcheck')
 
         k8s_def = k8sa_tdef.AtomicK8sTemplateDefinition()
 
@@ -724,6 +727,7 @@ class AtomicK8sTemplateDefinitionTestCase(BaseK8sTemplateDefinitionTestCase):
             'csi_snapshotter_tag': csi_snapshotter_tag,
             'csi_resizer_tag': csi_resizer_tag,
             'csi_node_driver_registrar_tag': csi_node_driver_registrar_tag,
+            'csi_liveness_probe_tag': csi_liveness_probe_tag,
             'draino_tag': draino_tag,
             'autoscaler_tag': autoscaler_tag,
             'min_node_count': min_node_count,
@@ -1160,6 +1164,8 @@ class AtomicK8sTemplateDefinitionTestCase(BaseK8sTemplateDefinitionTestCase):
             'csi_resizer_tag')
         csi_node_driver_registrar_tag = mock_cluster.labels.get(
             'csi_node_driver_registrar_tag')
+        csi_liveness_probe_tag = mock_cluster.labels.get(
+            'csi_liveness_probe_tag')
         draino_tag = mock_cluster.labels.get('draino_tag')
         autoscaler_tag = mock_cluster.labels.get('autoscaler_tag')
         min_node_count = mock_cluster.labels.get('min_node_count')
@@ -1186,7 +1192,8 @@ class AtomicK8sTemplateDefinitionTestCase(BaseK8sTemplateDefinitionTestCase):
 
         octavia_provider = mock_cluster.labels.get('octavia_provider')
         octavia_lb_algorithm = mock_cluster.labels.get('octavia_lb_algorithm')
-        octavia_lb_healthcheck = mock_cluster.labels.get('octavia_lb_healthcheck')
+        octavia_lb_healthcheck = mock_cluster.labels.get(
+                'octavia_lb_healthcheck')
 
         k8s_def = k8sa_tdef.AtomicK8sTemplateDefinition()
 
@@ -1288,6 +1295,7 @@ class AtomicK8sTemplateDefinitionTestCase(BaseK8sTemplateDefinitionTestCase):
             'csi_snapshotter_tag': csi_snapshotter_tag,
             'csi_resizer_tag': csi_resizer_tag,
             'csi_node_driver_registrar_tag': csi_node_driver_registrar_tag,
+            'csi_liveness_probe_tag': csi_liveness_probe_tag,
             'draino_tag': draino_tag,
             'autoscaler_tag': autoscaler_tag,
             'min_node_count': min_node_count,
