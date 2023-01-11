@@ -2,4 +2,4 @@
 upgrade:
   - |
     Now the default admission controller list is updated by as
-    "NodeRestriction, PodSecurityPolicy, NamespaceLifecycle, LimitRanger, ServiceAccount, ResourceQuota, TaintNodesByCondition, Priority, DefaultTolerationSeconds, DefaultStorageClass, StorageObjectInUseProtection, PersistentVolumeClaimResize, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, RuntimeClass" 
+    "NodeRestriction, NamespaceLifecycle, LimitRanger, ServiceAccount, ResourceQuota, TaintNodesByCondition, Priority, DefaultTolerationSeconds, DefaultStorageClass, StorageObjectInUseProtection, PersistentVolumeClaimResize, MutatingAdmissionWebhook, ValidatingAdmissionWebhook, RuntimeClass"

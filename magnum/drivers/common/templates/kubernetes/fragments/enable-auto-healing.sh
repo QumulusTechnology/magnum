@@ -25,23 +25,6 @@ metadata:
     addonmanager.kubernetes.io/mode: Reconcile
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: magnum:podsecuritypolicy:node-problem-detector
-  namespace: kube-system
-  labels:
-    addonmanager.kubernetes.io/mode: Reconcile
-    kubernetes.io/cluster-service: "true"
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: magnum:podsecuritypolicy:privileged
-subjects:
-- kind: ServiceAccount
-  name: node-problem-detector
-  namespace: kube-system
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: npd-binding
@@ -86,7 +69,7 @@ spec:
         - "/bin/sh"
         - "-c"
         # Pass both config to support both journald and syslog.
-        - "exec /node-problem-detector --logtostderr --system-log-monitors=/config/kernel-monitor.json,/config/kernel-monitor-filelog.json,/config/docker-monitor.json,/config/docker-monitor-filelog.json 2>&1 | tee /var/log/node-problem-detector.log"
+        - "exec /node-problem-detector --logtostderr --system-log-monitors=/config/kernel-monitor.json,/config/docker-monitor.json 2>&1 | tee /var/log/node-problem-detector.log"
         securityContext:
           privileged: true
         resources:

@@ -121,7 +121,7 @@ rules:
     verbs: ["list", "watch", "create", "update", "patch"]
   # Secret permission is optional.
   # Enable it if your driver needs secret.
-  # For example, `csi.storage.k8s.io/snapshotter-secret-name` is set in VolumeSnapshotClass.
+  # For example, "csi.storage.k8s.io/snapshotter-secret-name" is set in VolumeSnapshotClass.
   # See https://kubernetes-csi.github.io/docs/secrets-and-credentials.html for more details.
   #  - apiGroups: [""]
   #    resources: ["secrets"]
@@ -306,6 +306,7 @@ spec:
           image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
+            - '--health-port=9908'
           resources:
             requests:
               cpu: 20m
@@ -331,7 +332,7 @@ spec:
               value: kubernetes
           imagePullPolicy: "IfNotPresent"
           ports:
-            - containerPort: 9808
+            - containerPort: 9908
               name: healthz
               protocol: TCP
           # The probe
@@ -526,6 +527,17 @@ spec:
   volumeLifecycleModes:
   - Persistent
   - Ephemeral
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: cinder
+allowVolumeExpansion: true
+provisioner: kubernetes.io/cinder
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
 EOF
 
     echo "Waiting for Kubernetes API..."

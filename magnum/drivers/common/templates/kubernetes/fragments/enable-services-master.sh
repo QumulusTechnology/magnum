@@ -16,6 +16,19 @@ done
 echo "starting services"
 if [ ${CONTAINER_RUNTIME} = "containerd"  ] ; then
     container_runtime_service="containerd"
+
+    mkdir -p /etc/containerd
+    cat > /etc/containerd/config.toml << EOF
+version = 2
+
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+    [plugins."io.containerd.grpc.v1.cri".cni]
+      bin_dir = "/opt/cni/bin/"
+      conf_dir = "/etc/cni/net.d"
+  [plugins."io.containerd.internal.v1.opt"]
+    path = "/var/lib/containerd/opt"
+EOF
 else
     container_runtime_service="docker"
 fi
@@ -25,10 +38,6 @@ for action in enable restart; do
         $ssh_cmd systemctl $action $service
     done
 done
-
-sleep 10
-
-$ssh_cmd systemctl restart etcd
 
 # Label self as master
 until  [ "ok" = "$(kubectl get --raw='/healthz')" ] && \
