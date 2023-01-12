@@ -68,7 +68,7 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: true
       containers:
-      - image: ${CONTAINER_INFRA_PREFIX:-docker.io/}traefik:${TRAEFIK_INGRESS_CONTROLLER_TAG}
+      - image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/}traefik:${TRAEFIK_INGRESS_CONTROLLER_TAG}
         name: ingress-traefik-backend
         resources:
           requests:

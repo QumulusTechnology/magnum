@@ -21,7 +21,7 @@ nginx-ingress:
   controller:
     name: controller
     image:
-      repository: ${CONTAINER_INFRA_PREFIX:-quay.io/kubernetes-ingress-controller/}nginx-ingress-controller
+      repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/kubernetes-ingress-controller/}nginx-ingress-controller
       tag: ${NGINX_INGRESS_CONTROLLER_TAG}
       pullPolicy: IfNotPresent
     config: {}
@@ -132,7 +132,7 @@ nginx-ingress:
     enabled: true
     name: default-backend
     image:
-      repository: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/}defaultbackend
+      repository: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/}defaultbackend
       tag: "1.4"
       pullPolicy: IfNotPresent
     extraArgs: {}

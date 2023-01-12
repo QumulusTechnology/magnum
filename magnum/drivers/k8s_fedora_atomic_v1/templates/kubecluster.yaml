@@ -44,6 +44,22 @@ conditions:
 
 parameters:
 
+  dockerhub_repo_path:
+    type: string
+    default: "repo.qumulus.io/dockerhub-proxy"
+
+  quay_repo_path:
+    type: string
+    default: "repo.qumulus.io/quay-proxy"
+
+  gcr_repo_path:
+    type: string
+    default: "repo.qumulus.io/gcr-proxy"
+
+  k8s_gcr_repo_path:
+    type: string
+    default: "repo.qumulus.io/k8s-gcr-proxy"
+
   # needs to become a list if we want to join master nodes?
   existing_master_private_ip:
     type: string
@@ -447,7 +463,7 @@ parameters:
   hyperkube_prefix:
     type: string
     description: prefix to use for hyperkube images
-    default: k8s.gcr.io/
+    default: repo.qumulus.io/k8s-gcr-proxy/
 
   kube_tag:
     type: string
@@ -1176,6 +1192,11 @@ resources:
             list_join:
               - '-'
               - [{ get_param: 'OS::stack_name' }, 'master', '%index%']
+
+          dockerhub_repo_path: {get_param: dockerhub_repo_path}
+          quay_repo_path: {get_param: quay_repo_path}
+          gcr_repo_path: {get_param: gcr_repo_path}
+          k8s_gcr_repo_path: {get_param: k8s_gcr_repo_path}
           nodegroup_role: {get_param: master_role}
           nodegroup_name: {get_param: master_nodegroup_name}
           heapster_enabled: {get_param: heapster_enabled}

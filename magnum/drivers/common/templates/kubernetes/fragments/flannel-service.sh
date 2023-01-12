@@ -5,7 +5,7 @@ set -x
 
 
 if [ "$NETWORK_DRIVER" = "flannel" ]; then
-    _prefix=${CONTAINER_INFRA_PREFIX:-quay.io/coreos/}
+    _prefix=${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/coreos/}
     FLANNEL_DEPLOY=/srv/magnum/kubernetes/manifests/flannel-deploy.yaml
 
     [ -f ${FLANNEL_DEPLOY} ] || {

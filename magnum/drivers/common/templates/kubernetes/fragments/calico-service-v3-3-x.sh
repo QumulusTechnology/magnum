@@ -4,7 +4,7 @@ printf "Starting to run ${step}\n"
 . /etc/sysconfig/heat-params
 
 if [ "$NETWORK_DRIVER" = "calico" ]; then
-    _prefix=${CONTAINER_INFRA_PREFIX:-quay.io/calico/}
+    _prefix=${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/calico/}
 
     CALICO_DEPLOY=/srv/magnum/kubernetes/manifests/calico-deploy.yaml
     [ -f ${CALICO_DEPLOY} ] || {
@@ -233,7 +233,7 @@ spec:
       # as a host-networked pod.
       serviceAccountName: calico-node
       containers:
-      - image: "${CONTAINER_INFRA_PREFIX:-docker.io/calico/}typha:${CALICO_TAG}"
+      - image: "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/calico/}typha:${CALICO_TAG}"
         name: calico-typha
         ports:
         - containerPort: 5473
@@ -347,7 +347,7 @@ spec:
         # container programs network policy and routes on each
         # host.
         - name: calico-node
-          image: "${CONTAINER_INFRA_PREFIX:-docker.io/calico/}node:${CALICO_TAG}"
+          image: "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/calico/}node:${CALICO_TAG}"
           env:
             # Use Kubernetes API as the backing datastore.
             - name: DATASTORE_TYPE
@@ -442,7 +442,7 @@ spec:
         # This container installs the Calico CNI binaries
         # and CNI network config file on each node.
         - name: install-cni
-          image: "${CONTAINER_INFRA_PREFIX:-docker.io/calico/}cni:${CALICO_TAG}"
+          image: "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/calico/}cni:${CALICO_TAG}"
           command: ["/install-cni.sh"]
           env:
             # Name of the CNI config file to create.

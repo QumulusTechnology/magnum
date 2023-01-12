@@ -31,7 +31,7 @@ if [ "$(echo ${TILLER_ENABLED} | tr '[:upper:]' '[:lower:]')" == "true" ]; then
     # Sign helm-client cert
     openssl x509 -req -CA "${CERTS_DIR}/ca.cert.pem" -CAkey "${CERTS_DIR}/ca.key.pem" -CAcreateserial -in "${CERTS_DIR}/helm.csr.pem" -out "${CERTS_DIR}/helm.cert.pem"  -days 365
 
-    _tiller_prefix=${CONTAINER_INFRA_PREFIX:-gcr.io/kubernetes-helm/}
+    _tiller_prefix=${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/kubernetes-helm/}
     TILLER_RBAC=/srv/magnum/kubernetes/manifests/tiller-rbac.yaml
     TILLER_DEPLOYER=/srv/magnum/kubernetes/manifests/deploy-tiller.yaml
 

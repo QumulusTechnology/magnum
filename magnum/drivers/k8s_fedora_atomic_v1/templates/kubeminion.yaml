@@ -408,6 +408,10 @@ resources:
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/write-heat-params.sh}
                 params:
+                  $DOCKERHUB_REPO_PATH: {get_param: dockerhub_repo_path}
+                  $QUAY_REPO_PATH: {get_param: quay_repo_path}
+                  $GCR_REPO_PATH: {get_param: gcr_repo_path}
+                  $K8S_GCR_REPO_PATH: {get_param: k8s_gcr_repo_path}
                   $INSTANCE_NAME: {get_param: name}
                   $PROMETHEUS_MONITORING: {get_param: prometheus_monitoring}
                   $KUBE_ALLOW_PRIV: {get_param: kube_allow_priv}

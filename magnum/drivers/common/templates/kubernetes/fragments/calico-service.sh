@@ -7,7 +7,7 @@ set +x
 set -x
 
 if [ "$NETWORK_DRIVER" = "calico" ]; then
-    _prefix=${CONTAINER_INFRA_PREFIX:-quay.io/calico/}
+    _prefix=${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/calico/}
 
     CALICO_DEPLOY=/srv/magnum/kubernetes/manifests/calico-deploy.yaml
     [ -f ${CALICO_DEPLOY} ] || {

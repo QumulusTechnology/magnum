@@ -7,6 +7,22 @@ description: >
 
 parameters:
 
+  dockerhub_repo_path:
+    type: string
+    description: dockerhub_repo_path
+
+  quay_repo_path:
+    type: string
+    description: quay_repo_path
+
+  gcr_repo_path:
+    type: string
+    description: gcr_repo_path
+
+  k8s_gcr_repo_path:
+    type: string
+    description: k8s_gcr_repo_path
+
   name:
     type: string
     description: server name
@@ -605,7 +621,7 @@ parameters:
       vault server url
     default:
       ""
-      
+
   vault_mount_point:
     type: string
     description: >
@@ -786,6 +802,7 @@ resources:
                   __HOSTNAME__: {get_param: name}
                   __SSH_KEY_VALUE__: {get_param: ssh_public_key}
                   __OPENSTACK_CA__: {get_param: openstack_ca}
+                  __DOCKERHUB_REPO_PATH__: {get_param: dockerhub_repo_path}
                   __CONTAINER_INFRA_PREFIX__:
                     if:
                       - equals:
@@ -819,6 +836,10 @@ resources:
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/write-heat-params-master.sh}
                 params:
+                  "$DOCKERHUB_REPO_PATH": {get_param: dockerhub_repo_path}
+                  "$QUAY_REPO_PATH": {get_param: quay_repo_path}
+                  "$GCR_REPO_PATH": {get_param: gcr_repo_path}
+                  "$K8S_GCR_REPO_PATH": {get_param: k8s_gcr_repo_path}
                   "$INSTANCE_NAME": {get_param: name}
                   "$HEAPSTER_ENABLED": {get_param: heapster_enabled}
                   "$METRICS_SERVER_ENABLED": {get_param: metrics_server_enabled}

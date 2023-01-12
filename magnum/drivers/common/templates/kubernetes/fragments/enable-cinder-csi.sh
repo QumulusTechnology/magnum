@@ -234,7 +234,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
         - name: csi-attacher
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -250,7 +250,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: csi-provisioner
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -269,7 +269,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: csi-snapshotter
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -286,7 +286,7 @@ spec:
             - mountPath: /var/lib/csi/sockets/pluginproxy/
               name: socket-dir
         - name: csi-resizer
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -303,7 +303,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: liveness-probe
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - '--health-port=9908'
@@ -317,7 +317,7 @@ spec:
             - mountPath: /var/lib/csi/sockets/pluginproxy/
               name: socket-dir
         - name: cinder-csi-plugin
-          image: ${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
           args:
             - /bin/cinder-csi-plugin
             - "--endpoint=\$(CSI_ENDPOINT)"
@@ -418,7 +418,7 @@ spec:
       hostNetwork: true
       containers:
         - name: node-driver-registrar
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--kubelet-registration-path=\$(DRIVER_REG_SOCK_PATH)"
@@ -438,7 +438,7 @@ spec:
             - name: registration-dir
               mountPath: /registration
         - name: liveness-probe
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
           args:
             - --csi-address=/csi/csi.sock
           resources:
@@ -453,7 +453,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
           args:
             - /bin/cinder-csi-plugin
             - "--endpoint=\$(CSI_ENDPOINT)"

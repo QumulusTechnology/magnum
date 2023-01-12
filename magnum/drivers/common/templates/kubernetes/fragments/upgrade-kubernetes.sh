@@ -78,11 +78,11 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
         done
 
         for service in ${SERVICE_LIST}; do
-            ${ssh_cmd} atomic pull --storage ostree "${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag}"
+            ${ssh_cmd} atomic pull --storage ostree "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag}"
         done
 
         for service in ${SERVICE_LIST}; do
-            ${ssh_cmd} atomic containers update --rebase ${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag} ${service}
+            ${ssh_cmd} atomic containers update --rebase ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag} ${service}
         done
 
         for service in ${SERVICE_LIST}; do
@@ -92,7 +92,7 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
         ${ssh_cmd} ${kubecontrol} uncordon ${INSTANCE_NAME}
 
         for service in ${SERVICE_LIST}; do
-            ${ssh_cmd} atomic --assumeyes images "delete ${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}${service_image_mapping[${service}]}:${KUBE_TAG}"
+            ${ssh_cmd} atomic --assumeyes images "delete ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}${service_image_mapping[${service}]}:${KUBE_TAG}"
         done
 
         ${ssh_cmd} atomic images prune

@@ -3,8 +3,8 @@ printf "Starting to run ${step}\n"
 
 . /etc/sysconfig/heat-params
 
-_dns_prefix=${CONTAINER_INFRA_PREFIX:-docker.io/coredns/}
-_autoscaler_prefix=${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}
+_dns_prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/coredns/}
+_autoscaler_prefix=${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}
 
 CORE_DNS=/srv/magnum/kubernetes/manifests/kube-coredns.yaml
 [ -f ${CORE_DNS} ] || {
