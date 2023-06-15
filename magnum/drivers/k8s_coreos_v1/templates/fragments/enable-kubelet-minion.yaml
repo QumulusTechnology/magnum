@@ -72,7 +72,6 @@ write_files:
         --container-runtime=${CONTAINER_RUNTIME} \
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \
-        --logtostderr=true \
         --v=0 \
         --cadvisor-port=4194 \
         --kubeconfig=${KUBE_CONFIG} \

@@ -69,7 +69,7 @@ spec:
         - "/bin/sh"
         - "-c"
         # Pass both config to support both journald and syslog.
-        - "exec /node-problem-detector --logtostderr --system-log-monitors=/config/kernel-monitor.json,/config/docker-monitor.json 2>&1 | tee /var/log/node-problem-detector.log"
+        - "exec /node-problem-detector --system-log-monitors=/config/kernel-monitor.json,/config/docker-monitor.json 2>&1 | tee /var/log/node-problem-detector.log"
         securityContext:
           privileged: true
         resources:

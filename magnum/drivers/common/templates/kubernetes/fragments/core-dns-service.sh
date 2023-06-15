@@ -294,7 +294,6 @@ spec:
           # When cluster is using large nodes(with more cores), "coresPerReplica" should dominate.
           # If using small nodes, "nodesPerReplica" should dominate.
           - --default-params={"linear":{"coresPerReplica":256,"nodesPerReplica":16,"preventSinglePointFailure":true}}
-          - --logtostderr=true
           - --v=2
       tolerations:
       - key: "CriticalAddonsOnly"

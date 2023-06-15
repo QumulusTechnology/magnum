@@ -62,7 +62,6 @@ write_files:
         --register-with-taints=node.alpha.kubernetes.io/role=master:NoSchedule \
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \
-        --logtostderr=true \
         --v=0 \
         --cluster_dns=${DNS_SERVICE_IP} \
         --cluster_domain=${DNS_CLUSTER_DOMAIN} \

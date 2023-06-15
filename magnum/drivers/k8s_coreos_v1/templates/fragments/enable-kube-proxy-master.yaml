@@ -39,7 +39,6 @@ write_files:
           - proxy
           - --master=http://127.0.0.1:8080
           - --cluster-cidr=${FLANNEL_NETWORK_CIDR}
-          - --logtostderr=true
           - --v=0
           securityContext:
             privileged: true

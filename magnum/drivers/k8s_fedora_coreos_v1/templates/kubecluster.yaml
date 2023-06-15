@@ -476,21 +476,21 @@ parameters:
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.25.5-rancher1
+    default: v1.26.4-rancher2
 
   master_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.25.5-rancher1
+    default: v1.26.4-rancher2
 
   minion_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.25.5-rancher1
+    default: v1.26.4-rancher2
 
   cloud_provider_tag:
     type: string
@@ -526,7 +526,7 @@ parameters:
   kube_version:
     type: string
     description: version of kubernetes used for kubernetes cluster
-    default: v1.25.5-rancher1
+    default: v1.26.4-rancher2
 
   kube_dashboard_version:
     type: string
