@@ -1324,6 +1324,9 @@ resources:
           vault_mount_point: {get_param: vault_mount_point}
           vault_allowed_roles: {get_param: vault_allowed_roles}
           vault_url: {get_param: vault_url}
+          nfs_subdir_external_provisioner_enabled: {get_param: nfs_subdir_external_provisioner_enabled}
+          nfs_server: {get_param: nfs_server}
+          nfs_mount_point: {get_param: nfs_mount_point}
           cinder_csi_enabled: {get_param: cinder_csi_enabled}
           cinder_csi_plugin_tag: {get_param: cinder_csi_plugin_tag}
           csi_attacher_tag: {get_param: csi_attacher_tag}

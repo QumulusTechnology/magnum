@@ -636,6 +636,27 @@ parameters:
     default:
       ""
 
+  nfs_subdir_external_provisioner_enabled:
+    type: boolean
+    description: >
+      true if nfs subdir external provisioner helm chart to be installed. requires nfs_server and nfs_mount_point to be set
+    default:
+      false
+
+  nfs_server:
+    type: string
+    description: >
+      nfs_server
+    default:
+      ""
+
+  nfs_mount_point:
+    type: string
+    description: >
+      nfs_mount_point
+    default:
+      ""
+      
   cinder_csi_enabled:
     type: boolean
     description: >
@@ -961,6 +982,9 @@ resources:
                   "$VAULT_MOUNT_POINT": {get_param: vault_mount_point}
                   "$VAULT_ALLOWED_ROLES": {get_param: vault_allowed_roles}
                   "$VAULT_URL": {get_param: vault_url}
+                  "$NFS_SUBDIR_EXTERNAL_PROVISIONER_ENABLED": {get_param: nfs_subdir_external_provisioner_enabled}
+                  "$NFS_SERVER": {get_param: nfs_server}
+                  "$NFS_MOUNT_POINT": {get_param: nfs_mount_point}
                   "$CINDER_CSI_ENABLED": {get_param: cinder_csi_enabled}
                   "$CINDER_CSI_PLUGIN_TAG": {get_param: cinder_csi_plugin_tag}
                   "$CSI_ATTACHER_TAG": {get_param: csi_attacher_tag}

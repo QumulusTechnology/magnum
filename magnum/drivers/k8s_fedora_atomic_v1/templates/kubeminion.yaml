@@ -468,6 +468,9 @@ resources:
                   $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
                   $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}
                   $VAULT_URL: {get_param: vault_url}
+                  $NFS_SUBDIR_EXTERNAL_PROVISIONER_ENABLED: {get_param: nfs_subdir_external_provisioner_enabled}
+                  $NFS_SERVER: {get_param: nfs_server}
+                  $NFS_MOUNT_POINT: {get_param: nfs_mount_point}
                   $NPD_ENABLED: {get_param: npd_enabled}
                   $NODEGROUP_ROLE: {get_param: nodegroup_role}
                   $NODEGROUP_NAME: {get_param: nodegroup_name}
