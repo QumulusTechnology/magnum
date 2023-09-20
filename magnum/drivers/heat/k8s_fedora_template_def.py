@@ -127,7 +127,10 @@ class K8sFedoraTemplateDefinition(k8s_template_def.K8sTemplateDefinition):
                       'min_node_count', 'max_node_count', 'npd_enabled',
                       'ostree_remote', 'ostree_commit',
                       'use_podman', 'kube_image_digest',
-                      'metrics_scraper_tag']
+                      'metrics_scraper_tag',
+                      'vault_ssh_enabled', 'vault_url',
+                      'nfs_subdir_external_provisioner_enabled', 'nfs_server', 'nfs_mount_point',
+                      'vault_allowed_roles', 'vault_mount_point']
 
         labels = self._get_relevant_labels(cluster, kwargs)
 

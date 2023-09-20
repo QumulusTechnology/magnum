@@ -121,7 +121,7 @@ rules:
     verbs: ["list", "watch", "create", "update", "patch"]
   # Secret permission is optional.
   # Enable it if your driver needs secret.
-  # For example, `csi.storage.k8s.io/snapshotter-secret-name` is set in VolumeSnapshotClass.
+  # For example, "csi.storage.k8s.io/snapshotter-secret-name" is set in VolumeSnapshotClass.
   # See https://kubernetes-csi.github.io/docs/secrets-and-credentials.html for more details.
   #  - apiGroups: [""]
   #    resources: ["secrets"]
@@ -222,6 +222,7 @@ spec:
         app: csi-cinder-controllerplugin
     spec:
       serviceAccount: csi-cinder-controller-sa
+      hostNetwork: true
       tolerations:
         # Make sure the pod can be scheduled on master kubelet.
         - effect: NoSchedule
@@ -233,7 +234,7 @@ spec:
         node-role.kubernetes.io/master: ""
       containers:
         - name: csi-attacher
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-attacher:${CSI_ATTACHER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -249,7 +250,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: csi-provisioner
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-provisioner:${CSI_PROVISIONER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -268,7 +269,7 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: csi-snapshotter
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-snapshotter:${CSI_SNAPSHOTTER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -285,7 +286,7 @@ spec:
             - mountPath: /var/lib/csi/sockets/pluginproxy/
               name: socket-dir
         - name: csi-resizer
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-resizer:${CSI_RESIZER_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--timeout=3m"
@@ -302,9 +303,10 @@ spec:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
         - name: liveness-probe
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
+            - '--health-port=9908'
           resources:
             requests:
               cpu: 20m
@@ -315,7 +317,7 @@ spec:
             - mountPath: /var/lib/csi/sockets/pluginproxy/
               name: socket-dir
         - name: cinder-csi-plugin
-          image: ${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
           args:
             - /bin/cinder-csi-plugin
             - "--endpoint=\$(CSI_ENDPOINT)"
@@ -330,7 +332,7 @@ spec:
               value: kubernetes
           imagePullPolicy: "IfNotPresent"
           ports:
-            - containerPort: 9808
+            - containerPort: 9908
               name: healthz
               protocol: TCP
           # The probe
@@ -416,7 +418,7 @@ spec:
       hostNetwork: true
       containers:
         - name: node-driver-registrar
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}csi-node-driver-registrar:${CSI_NODE_DRIVER_REGISTRAR_TAG}
           args:
             - "--csi-address=\$(ADDRESS)"
             - "--kubelet-registration-path=\$(DRIVER_REG_SOCK_PATH)"
@@ -436,7 +438,7 @@ spec:
             - name: registration-dir
               mountPath: /registration
         - name: liveness-probe
-          image: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}livenessprobe:${CSI_LIVENESS_PROBE_TAG}
           args:
             - --csi-address=/csi/csi.sock
           resources:
@@ -451,7 +453,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
+          image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}cinder-csi-plugin:${CINDER_CSI_PLUGIN_TAG}
           args:
             - /bin/cinder-csi-plugin
             - "--endpoint=\$(CSI_ENDPOINT)"
@@ -525,6 +527,17 @@ spec:
   volumeLifecycleModes:
   - Persistent
   - Ephemeral
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: cinder
+allowVolumeExpansion: true
+provisioner: kubernetes.io/cinder
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
 EOF
 
     echo "Waiting for Kubernetes API..."

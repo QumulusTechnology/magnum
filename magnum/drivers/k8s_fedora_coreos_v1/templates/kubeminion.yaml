@@ -7,6 +7,57 @@ description: >
 
 parameters:
 
+  dockerhub_repo_path:
+    type: string
+    description: dockerhub_repo_path
+    default:
+      "repo.qumulus.io/dockerhub-proxy"
+
+  quay_repo_path:
+    type: string
+    description: quay_repo_path
+    default:
+      "repo.qumulus.io/quay-proxy"
+
+  gcr_repo_path:
+    type: string
+    description: gcr_repo_path
+    default:
+      "repo.qumulus.io/gcr-proxy"
+
+  k8s_gcr_repo_path:
+    type: string
+    description: k8s_gcr_repo_path
+    default:
+      "repo.qumulus.io/k8s-gcr-proxy"
+
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+    default:
+      false
+
+  vault_url:
+    type: string
+    description: >
+      vault server url
+    default:
+      ""
+
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+    default:
+      ""
+
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+    default:
+      ""
   name:
     type: string
     description: server name
@@ -412,6 +463,7 @@ resources:
                   __HOSTNAME__: {get_param: name}
                   __SSH_KEY_VALUE__: {get_param: ssh_public_key}
                   __OPENSTACK_CA__: {get_param: openstack_ca}
+                  __DOCKERHUB_REPO_PATH__: {get_param: dockerhub_repo_path}
                   __CONTAINER_INFRA_PREFIX__:
                     if:
                       - equals:
@@ -451,6 +503,16 @@ resources:
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/write-heat-params.sh}
                 params:
+
+                  $DOCKERHUB_REPO_PATH: {get_param: dockerhub_repo_path}
+                  $QUAY_REPO_PATH: {get_param: quay_repo_path}
+                  $GCR_REPO_PATH: {get_param: gcr_repo_path}
+                  $K8S_GCR_REPO_PATH: {get_param: k8s_gcr_repo_path}
+                  $VAULT_SSH_ENABLED: {get_param: vault_ssh_enabled}
+                  $VAULT_URL: {get_param: vault_url}
+                  $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
+                  $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}
+    
                   $INSTANCE_NAME: {get_param: name}
                   $PROMETHEUS_MONITORING: {get_param: prometheus_monitoring}
                   $KUBE_ALLOW_PRIV: {get_param: kube_allow_priv}
@@ -526,6 +588,8 @@ resources:
                   $configure_docker_storage_driver: {get_file: ../../common/templates/fragments/configure_docker_storage_driver_fedora_coreos.sh}
             - get_file: ../../common/templates/kubernetes/fragments/enable-services-minion.sh
             - get_file: ../../common/templates/fragments/enable-docker-registry.sh
+            - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
+            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
 
   node_config_deployment:
     type: OS::Heat::SoftwareDeployment

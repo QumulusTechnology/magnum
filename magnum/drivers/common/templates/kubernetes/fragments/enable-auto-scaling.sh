@@ -3,7 +3,7 @@ printf "Starting to run ${step}\n"
 
 . /etc/sysconfig/heat-params
 
-_docker_ca_prefix=${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}
+_docker_ca_prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}
 
 auto_scaling_enabled=$(echo $AUTO_SCALING_ENABLED | tr '[:upper:]' '[:lower:]')
 auto_healing_enabled=$(echo $AUTO_HEALING_ENABLED | tr '[:upper:]' '[:lower:]')

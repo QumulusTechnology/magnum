@@ -45,6 +45,23 @@ conditions:
 parameters:
 
   # needs to become a list if we want to join master nodes?
+
+  dockerhub_repo_path:
+    type: string
+    default: "repo.qumulus.io/dockerhub-proxy"
+
+  quay_repo_path:
+    type: string
+    default: "repo.qumulus.io/quay-proxy"
+
+  gcr_repo_path:
+    type: string
+    default: "repo.qumulus.io/gcr-proxy"
+
+  k8s_gcr_repo_path:
+    type: string
+    default: "repo.qumulus.io/k8s-gcr-proxy"
+
   existing_master_private_ip:
     type: string
     default: ""
@@ -1176,6 +1193,19 @@ resources:
             list_join:
               - '-'
               - [{ get_param: 'OS::stack_name' }, 'master', '%index%']
+
+          dockerhub_repo_path: {get_param: dockerhub_repo_path}
+          quay_repo_path: {get_param: quay_repo_path}
+          gcr_repo_path: {get_param: gcr_repo_path}
+          k8s_gcr_repo_path: {get_param: k8s_gcr_repo_path}
+          vault_ssh_enabled: {get_param: vault_ssh_enabled}
+          vault_mount_point: {get_param: vault_mount_point}
+          vault_allowed_roles: {get_param: vault_allowed_roles}
+          vault_url: {get_param: vault_url}
+          nfs_subdir_external_provisioner_enabled: {get_param: nfs_subdir_external_provisioner_enabled}
+          nfs_server: {get_param: nfs_server}
+          nfs_mount_point: {get_param: nfs_mount_point}
+
           nodegroup_role: {get_param: master_role}
           nodegroup_name: {get_param: master_nodegroup_name}
           heapster_enabled: {get_param: heapster_enabled}

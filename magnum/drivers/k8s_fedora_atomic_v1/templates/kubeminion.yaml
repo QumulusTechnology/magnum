@@ -408,6 +408,19 @@ resources:
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/write-heat-params.sh}
                 params:
+
+                  $DOCKERHUB_REPO_PATH: {get_param: dockerhub_repo_path}
+                  $QUAY_REPO_PATH: {get_param: quay_repo_path}
+                  $GCR_REPO_PATH: {get_param: gcr_repo_path}
+                  $K8S_GCR_REPO_PATH: {get_param: k8s_gcr_repo_path}
+                  $VAULT_SSH_ENABLED: {get_param: vault_ssh_enabled}
+                  $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
+                  $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}
+                  $VAULT_URL: {get_param: vault_url}
+                  $NFS_SUBDIR_EXTERNAL_PROVISIONER_ENABLED: {get_param: nfs_subdir_external_provisioner_enabled}
+                  $NFS_SERVER: {get_param: nfs_server}
+                  $NFS_MOUNT_POINT: {get_param: nfs_mount_point}
+
                   $INSTANCE_NAME: {get_param: name}
                   $PROMETHEUS_MONITORING: {get_param: prometheus_monitoring}
                   $KUBE_ALLOW_PRIV: {get_param: kube_allow_priv}

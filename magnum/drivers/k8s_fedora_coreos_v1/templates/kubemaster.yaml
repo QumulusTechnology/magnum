@@ -7,6 +7,79 @@ description: >
 
 parameters:
 
+  dockerhub_repo_path:
+    type: string
+    description: dockerhub_repo_path
+    default:
+      "repo.qumulus.io/dockerhub-proxy"
+
+  quay_repo_path:
+    type: string
+    description: quay_repo_path
+    default:
+      "repo.qumulus.io/quay-proxy"
+
+  gcr_repo_path:
+    type: string
+    description: gcr_repo_path
+    default:
+      "repo.qumulus.io/gcr-proxy"
+
+  k8s_gcr_repo_path:
+    type: string
+    description: k8s_gcr_repo_path
+    default:
+      "repo.qumulus.io/k8s-gcr-proxy"
+
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+    default:
+      false
+
+  vault_url:
+    type: string
+    description: >
+      vault server url
+    default:
+      ""
+
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+    default:
+      ""
+
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+    default:
+      ""
+
+  nfs_subdir_external_provisioner_enabled:
+    type: boolean
+    description: >
+      true if nfs subdir external provisioner helm chart to be installed. requires nfs_server and nfs_mount_point to be set
+    default:
+      false
+
+  nfs_server:
+    type: string
+    description: >
+      nfs_server
+    default:
+      ""
+
+  nfs_mount_point:
+    type: string
+    description: >
+      nfs_mount_point
+    default:
+      ""
+
   name:
     type: string
     description: server name
@@ -585,7 +658,7 @@ parameters:
   magnum_auto_healer_tag:
     type: string
     description: tag of the magnum-auto-healer service.
-    default: "v1.15.0"
+    default: "v1.23.4"
 
   auto_scaling_enabled:
     type: boolean
@@ -758,6 +831,7 @@ resources:
                   __HOSTNAME__: {get_param: name}
                   __SSH_KEY_VALUE__: {get_param: ssh_public_key}
                   __OPENSTACK_CA__: {get_param: openstack_ca}
+                  __DOCKERHUB_REPO_PATH__: {get_param: dockerhub_repo_path}
                   __CONTAINER_INFRA_PREFIX__:
                     if:
                       - equals:
@@ -791,6 +865,20 @@ resources:
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/write-heat-params-master.sh}
                 params:
+                  "$DOCKERHUB_REPO_PATH": {get_param: dockerhub_repo_path}
+                  "$QUAY_REPO_PATH": {get_param: quay_repo_path}
+                  "$GCR_REPO_PATH": {get_param: gcr_repo_path}
+                  "$K8S_GCR_REPO_PATH": {get_param: k8s_gcr_repo_path}
+                  "$AUTO_HEALING_CONTROLLER": {get_param: auto_healing_controller}
+                  "$MAGNUM_AUTO_HEALER_TAG": {get_param: magnum_auto_healer_tag}
+                  "$AUTO_SCALING_ENABLED": {get_param: auto_scaling_enabled}
+                  "$VAULT_SSH_ENABLED": {get_param: vault_ssh_enabled}
+                  "$VAULT_MOUNT_POINT": {get_param: vault_mount_point}
+                  "$VAULT_ALLOWED_ROLES": {get_param: vault_allowed_roles}
+                  "$VAULT_URL": {get_param: vault_url}
+                  "$NFS_SUBDIR_EXTERNAL_PROVISIONER_ENABLED": {get_param: nfs_subdir_external_provisioner_enabled}
+                  "$NFS_SERVER": {get_param: nfs_server}
+                  "$NFS_MOUNT_POINT": {get_param: nfs_mount_point}
                   "$INSTANCE_NAME": {get_param: name}
                   "$HEAPSTER_ENABLED": {get_param: heapster_enabled}
                   "$METRICS_SERVER_ENABLED": {get_param: metrics_server_enabled}
@@ -948,6 +1036,8 @@ resources:
                   $configure_docker_storage_driver: {get_file: ../../common/templates/fragments/configure_docker_storage_driver_fedora_coreos.sh}
             - get_file: ../../common/templates/kubernetes/fragments/enable-services-master.sh
             - get_file: ../../common/templates/kubernetes/fragments/add-proxy.sh
+            - get_file: ../../common/templates/fragments/vault-ssh-selinux-fix.sh
+            - get_file: ../../common/templates/fragments/enable-vault-ssh-login.sh
 
   master_config_deployment:
     type: OS::Heat::SoftwareDeployment

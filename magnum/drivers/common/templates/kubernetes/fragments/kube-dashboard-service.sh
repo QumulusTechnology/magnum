@@ -11,7 +11,7 @@ done
 
 if [ "$(echo $KUBE_DASHBOARD_ENABLED | tr '[:upper:]' '[:lower:]')" == "true" ]; then
     KUBE_DASH_IMAGE="${CONTAINER_INFRA_PREFIX:-kubernetesui/}dashboard:${KUBE_DASHBOARD_VERSION}"
-    HEAPSTER_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-${ARCH}:v1.4.2"
+    HEAPSTER_IMAGE="${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}heapster-${ARCH}:v1.4.2"
     METRICS_SCRAPER_IMAGE="${CONTAINER_INFRA_PREFIX:-kubernetesui/}metrics-scraper:${METRICS_SCRAPER_TAG}"
 
     KUBE_DASH_DEPLOY=/srv/magnum/kubernetes/kubernetes-dashboard.yaml
@@ -331,8 +331,8 @@ EOF
     # Deploy INFLUX AND GRAFANA
     if [ "$(echo $INFLUX_GRAFANA_DASHBOARD_ENABLED | tr '[:upper:]' '[:lower:]')" == "true" ]; then
         INFLUX_SINK="        - --sink=influxdb:http://monitoring-influxdb.kube-system.svc:8086"
-        INFLUX_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-influxdb-${ARCH}:v1.3.3"
-        GRAFANA_IMAGE="${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}heapster-grafana-${ARCH}:v4.4.3"
+        INFLUX_IMAGE="${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}heapster-influxdb-${ARCH}:v1.3.3"
+        GRAFANA_IMAGE="${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}heapster-grafana-${ARCH}:v4.4.3"
 
         INFLUX_DEPLOY=/srv/magnum/kubernetes/influxdb.yaml
         GRAFANA_DEPLOY=/srv/magnum/kubernetes/grafana.yaml

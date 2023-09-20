@@ -81,10 +81,10 @@ manifests = manifests.replace(
     "\$("
 ).replace(
     "k8s.gcr.io/sig-storage/",
-    "${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/sig-storage/}"
+    "${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}"
 ).replace(
     "docker.io/k8scloudprovider/",
-    "${CONTAINER_INFRA_PREFIX:-docker.io/k8scloudprovider/}",
+    "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}",
 ).replace(
     "csi-attacher:v3.4.0",
     "csi-attacher:${CSI_ATTACHER_TAG}",
