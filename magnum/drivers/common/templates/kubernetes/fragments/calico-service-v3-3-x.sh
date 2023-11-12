@@ -4,7 +4,7 @@ printf "Starting to run ${step}\n"
 . /etc/sysconfig/heat-params
 
 if [ "$NETWORK_DRIVER" = "calico" ]; then
-    _prefix=${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/calico/}
+    _prefix=${QUAY_REPO_PATH}/calico/
 
     CALICO_DEPLOY=/srv/magnum/kubernetes/manifests/calico-deploy.yaml
     [ -f ${CALICO_DEPLOY} ] || {

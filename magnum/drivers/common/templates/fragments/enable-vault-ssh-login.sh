@@ -15,7 +15,7 @@ if [ "${vault_ssh_enabled}" = "true" ] && [ -n "${vault_url}" ] && [ -n "${vault
 mkdir -p /etc/vault-ssh-helper.d/
 
 if [ ! -f /usr/local/bin/vault-ssh-helper ]; then
-    curl -s -o /etc/vault-ssh-helper.d/vault-ssh-helper https://qumulusglobalprod.blob.core.windows.net/public-files/vault-ssh-helper
+    curl -s -o /etc/vault-ssh-helper.d/vault-ssh-helper https://qumuluspublic.blob.core.windows.net/qpc/vault-ssh-helper
     chmod 0755 /etc/vault-ssh-helper.d/vault-ssh-helper
     chown root:root /etc/vault-ssh-helper.d/vault-ssh-helper
 fi

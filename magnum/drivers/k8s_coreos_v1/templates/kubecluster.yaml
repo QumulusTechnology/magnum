@@ -385,7 +385,7 @@ parameters:
     type: string
     description: >
       Docker registry used for hyperkube image
-    default: quay.io/coreos/hyperkube
+    default: repo.qumulus.io/quay-proxy/coreos/hyperkube
 
   insecure_registry_url:
     type: string

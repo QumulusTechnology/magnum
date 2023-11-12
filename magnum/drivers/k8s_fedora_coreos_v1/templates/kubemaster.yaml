@@ -837,7 +837,7 @@ resources:
                       - equals:
                         - get_param: container_infra_prefix
                         - ""
-                      - "docker.io/openstackmagnum/"
+                      - "${DOCKERHUB_REPO_PATH}/openstackmagnum/"
                       - get_param: container_infra_prefix
                   __HEAT_CONTAINER_AGENT_TAG__: {get_param: heat_container_agent_tag}
                   __HTTP_PROXY__: {get_param: http_proxy}

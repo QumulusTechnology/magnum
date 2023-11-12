@@ -503,14 +503,14 @@ parameters:
   hyperkube_prefix:
     type: string
     description: prefix to use for hyperkube images
-    default: docker.io/rancher/
+    default: repo.qumulus.io/dockerhub-proxy/rancher/
 
   kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.26.8-rancher2
+    default: v1.27.7-rancher1
 
   master_kube_tag:
     type: string

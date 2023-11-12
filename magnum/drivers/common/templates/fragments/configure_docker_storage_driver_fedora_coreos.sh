@@ -11,11 +11,10 @@ fi
 clear_docker_storage () {
     # stop docker
     $ssh_cmd systemctl stop ${runtime}
-    $ssh_cmd systemctl stop var-lib-containerd.mount ${runtime}
+     $ssh_cmd systemctl is-active --quiet var-lib-containerd.mount && $ssh_cmd systemctl stop var-lib-containerd.mount
     # clear storage graph
     $ssh_cmd rm -rf ${storage_dir}
     $ssh_cmd mkdir -p ${storage_dir}
-    $ssh_cmd systemctl start var-lib-containerd.mount ${runtime}
 }
 
 # Configure generic docker storage driver.

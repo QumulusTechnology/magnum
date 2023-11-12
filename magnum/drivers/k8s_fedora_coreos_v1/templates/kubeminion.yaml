@@ -469,7 +469,7 @@ resources:
                       - equals:
                         - get_param: container_infra_prefix
                         - ""
-                      - "docker.io/openstackmagnum/"
+                      - "${DOCKERHUB_REPO_PATH}/openstackmagnum/"
                       - get_param: container_infra_prefix
                   __HEAT_CONTAINER_AGENT_TAG__: {get_param: heat_container_agent_tag}
                   __HTTP_PROXY__: {get_param: http_proxy}
@@ -512,7 +512,7 @@ resources:
                   $VAULT_URL: {get_param: vault_url}
                   $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
                   $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}
-    
+
                   $INSTANCE_NAME: {get_param: name}
                   $PROMETHEUS_MONITORING: {get_param: prometheus_monitoring}
                   $KUBE_ALLOW_PRIV: {get_param: kube_allow_priv}

@@ -50,7 +50,7 @@ sed -i '/^PasswordAuthentication yes/ s/ yes/ no/' /etc/ssh/sshd_config
 systemctl restart sshd
 
 
-_prefix="${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}"
+_prefix="${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}"
 
 if [ "$(echo $USE_PODMAN | tr '[:upper:]' '[:lower:]')" == "true" ]; then
     cat > /etc/containers/libpod.conf <<EOF

@@ -381,6 +381,7 @@ resources:
                 params:
                   $CONTAINER_INFRA_PREFIX: {get_param: container_infra_prefix}
                   $HEAT_CONTAINER_AGENT_TAG: {get_param: heat_container_agent_tag}
+                  $DOCKERHUB_REPO_PATH: {get_param: dockerhub_repo_path}
                   $USE_PODMAN: {get_param: use_podman}
                   $HTTP_PROXY: {get_param: http_proxy}
                   $HTTPS_PROXY: {get_param: https_proxy}

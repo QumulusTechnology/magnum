@@ -80,7 +80,7 @@ manifests = manifests.replace(
     "$(",
     "\$("
 ).replace(
-    "k8s.gcr.io/sig-storage/",
+    "k8s.image: ${GCR_REPO_PATH}/sig-storage/",
     "${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}"
 ).replace(
     "docker.io/k8scloudprovider/",
