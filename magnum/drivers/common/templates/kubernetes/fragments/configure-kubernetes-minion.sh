@@ -107,7 +107,7 @@ ExecStart=/bin/bash -c '/usr/bin/podman run --name kubelet \\
     --volume /var/run/lock:/var/run/lock:z \\
     --volume /opt/cni/bin:/opt/cni/bin:z \\
     --volume /etc/machine-id:/etc/machine-id \\
-    \${CONTAINER_INFRA_PREFIX:-\${HYPERKUBE_PREFIX}}hyperkube:\${KUBE_TAG} \\
+    \${CONTAINER_INFRA_PREFIX:-\${HYPERKUBE_PREFIX}}/hyperkube:\${KUBE_TAG} \\
     kubelet \\
     \$KUBE_LOG_LEVEL \$KUBELET_API_SERVER \$KUBELET_ADDRESS \$KUBELET_PORT \$KUBELET_HOSTNAME \$KUBELET_ARGS'
 ExecStop=-/usr/bin/podman stop kubelet
@@ -139,7 +139,7 @@ ExecStart=/bin/bash -c '/usr/bin/podman run --name kube-proxy \\
     --volume /sys/fs/cgroup:/sys/fs/cgroup \\
     --volume /lib/modules:/lib/modules:ro \\
     --volume /etc/pki/tls/certs:/usr/share/ca-certificates:ro \\
-    \${CONTAINER_INFRA_PREFIX:-\${HYPERKUBE_PREFIX}}hyperkube:\${KUBE_TAG} \\
+    \${CONTAINER_INFRA_PREFIX:-\${HYPERKUBE_PREFIX}}/hyperkube:\${KUBE_TAG} \\
     kube-proxy \\
     \$KUBE_LOG_LEVEL \$KUBE_MASTER \$KUBE_PROXY_ARGS'
 ExecStop=-/usr/bin/podman stop kube-proxy
@@ -279,11 +279,11 @@ KUBELET_ARGS="${KUBELET_ARGS} --client-ca-file=${CERT_DIR}/ca.crt --tls-cert-fil
 KUBELET_ARGS="${KUBELET_ARGS} --cgroup-driver=${CGROUP_DRIVER}"
 if [ ${CONTAINER_RUNTIME} = "containerd"  ] ; then
     KUBELET_ARGS="${KUBELET_ARGS} --runtime-cgroups=/system.slice/containerd.service"
-    KUBELET_ARGS="${KUBELET_ARGS} --container-runtime=remote"
+#    KUBELET_ARGS="${KUBELET_ARGS} --container-runtime=remote"
     KUBELET_ARGS="${KUBELET_ARGS} --runtime-request-timeout=15m"
     KUBELET_ARGS="${KUBELET_ARGS} --container-runtime-endpoint=unix:///run/containerd/containerd.sock"
-else
-    KUBELET_ARGS="${KUBELET_ARGS} --network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"
+#else
+#    KUBELET_ARGS="${KUBELET_ARGS} --network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"
 fi
 
 auto_healing_enabled=$(echo ${AUTO_HEALING_ENABLED} | tr '[:upper:]' '[:lower:]')

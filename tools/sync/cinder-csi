@@ -81,10 +81,10 @@ manifests = manifests.replace(
     "\$("
 ).replace(
     "k8s.image: ${GCR_REPO_PATH}/sig-storage/",
-    "${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/sig-storage/}"
+    "${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/sig-storage/}"
 ).replace(
     "docker.io/k8scloudprovider/",
-    "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}",
+    "${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/provider-os/}",
 ).replace(
     "csi-attacher:v3.4.0",
     "csi-attacher:${CSI_ATTACHER_TAG}",
@@ -98,7 +98,7 @@ manifests = manifests.replace(
     "csi-resizer:v1.4.0",
     "csi-resizer:${CSI_RESIZER_TAG}",
 ).replace(
-    "livenessprobe:v2.7.0",
+    "livenessprobe:v2.9.1",
     "livenessprobe:${CSI_LIVENESS_PROBE_TAG}",
 ).replace(
     "cinder-csi-plugin:latest",

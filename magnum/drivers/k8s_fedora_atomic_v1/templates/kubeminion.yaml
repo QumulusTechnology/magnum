@@ -413,7 +413,7 @@ resources:
                   $DOCKERHUB_REPO_PATH: {get_param: dockerhub_repo_path}
                   $QUAY_REPO_PATH: {get_param: quay_repo_path}
                   $GCR_REPO_PATH: {get_param: gcr_repo_path}
-                  $K8S_GCR_REPO_PATH: {get_param: k8s_gcr_repo_path}
+                  $K8S_REPO_PATH: {get_param: k8s_repo_path}
                   $VAULT_SSH_ENABLED: {get_param: vault_ssh_enabled}
                   $VAULT_MOUNT_POINT: {get_param: vault_mount_point}
                   $VAULT_ALLOWED_ROLES: {get_param: vault_allowed_roles}

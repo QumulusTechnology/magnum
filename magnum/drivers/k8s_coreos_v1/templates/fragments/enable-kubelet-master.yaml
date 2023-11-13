@@ -58,7 +58,6 @@ write_files:
         --cni-conf-dir=/etc/kubernetes/cni/net.d \
         --network-plugin=cni \
         --hostname-override=${INSTANCE_NAME} \
-        --container-runtime=${CONTAINER_RUNTIME} \
         --register-with-taints=node.alpha.kubernetes.io/role=master:NoSchedule \
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \

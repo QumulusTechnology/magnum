@@ -69,7 +69,6 @@ write_files:
         --cni-conf-dir=/etc/kubernetes/cni/net.d \
         --network-plugin=cni \
         --hostname-override=${INSTANCE_NAME} \
-        --container-runtime=${CONTAINER_RUNTIME} \
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \
         --logtostderr=true \

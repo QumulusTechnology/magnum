@@ -301,7 +301,7 @@ ${APP_INGRESS_ANNOTATIONS}
     prometheusConfigReloaderImage:
       repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/coreos/}prometheus-config-reloader
     hyperkubeImage:
-      repository: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/}hyperkube
+      repository: ${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/}hyperkube
 
   prometheus:
     ingress:

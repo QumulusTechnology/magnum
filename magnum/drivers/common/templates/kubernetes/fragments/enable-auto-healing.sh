@@ -3,7 +3,7 @@ printf "Starting to run ${step}\n"
 
 . /etc/sysconfig/heat-params
 
-_gcr_prefix=${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/}
+_k8s_prefix=${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/}
 
 # Either auto scaling or auto healing we need CA to be deployed
 if [[ "$(echo $AUTO_HEALING_ENABLED | tr '[:upper:]' '[:lower:]')" = "true" || "$(echo $NPD_ENABLED | tr '[:upper:]' '[:lower:]')" = "true" ]]; then
@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: node-problem-detector
-        image: ${_gcr_prefix}node-problem-detector/node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
+        image: ${_k8s_prefix}node-problem-detector/node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
         command:
         - "/bin/sh"
         - "-c"
@@ -239,7 +239,7 @@ EOF
 
 function enable_magnum_auto_healer {
     echo "Installing magnum_auto_healer"
-    image_prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/k8scloudprovider/}
+    image_prefix=${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/provider-os/}
     image_prefix=${image_prefix%/}
     magnum_auto_healer_manifest=/srv/magnum/kubernetes/manifests/magnum_auto_healer.yaml
 

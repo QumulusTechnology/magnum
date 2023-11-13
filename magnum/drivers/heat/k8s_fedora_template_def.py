@@ -74,7 +74,18 @@ class K8sFedoraTemplateDefinition(k8s_template_def.K8sTemplateDefinition):
                 'to be true or unset.'))
         extra_params['cloud_provider_enabled'] = cloud_provider_enabled
 
-        label_list = ['coredns_tag',
+        label_list = ['nfs_subdir_external_provisioner_enabled',
+                      'nfs_server',
+                      'nfs_mount_point',
+                      'vault_ssh_enabled',
+                      'vault_url',
+                      'vault_mount_point',
+                      'vault_allowed_roles',
+                      'dockerhub_repo_path',
+                      'quay_repo_path',
+                      'gcr_repo_path',
+                      'k8s_repo_path',
+                      'coredns_tag',
                       'hyperkube_prefix',
                       'kube_tag', 'container_infra_prefix',
                       'availability_zone',

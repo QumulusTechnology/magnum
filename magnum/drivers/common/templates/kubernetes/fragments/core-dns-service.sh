@@ -4,7 +4,7 @@ printf "Starting to run ${step}\n"
 . /etc/sysconfig/heat-params
 
 _dns_prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/coredns/}
-_autoscaler_prefix=${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}
+_autoscaler_prefix=${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/cpa/}
 
 CORE_DNS=/srv/magnum/kubernetes/manifests/kube-coredns.yaml
 [ -f ${CORE_DNS} ] || {
@@ -228,11 +228,11 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["nodes"]
-    verbs: ["list"]
+    verbs: ["list","get","watch"]
   - apiGroups: [""]
     resources: ["replicationcontrollers/scale"]
     verbs: ["get", "update"]
-  - apiGroups: ["extensions"]
+  - apiGroups: ["extensions","apps"]
     resources: ["deployments/scale", "replicasets/scale"]
     verbs: ["get", "update"]
 # Remove the configmaps rule once below issue is fixed:
@@ -280,7 +280,7 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
       - name: autoscaler
-        image: ${_autoscaler_prefix}cluster-proportional-autoscaler-${ARCH}:1.1.2
+        image: ${_autoscaler_prefix}cluster-proportional-autoscaler:v1.8.9
         resources:
             requests:
                 cpu: "20m"

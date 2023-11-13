@@ -58,9 +58,9 @@ parameters:
     type: string
     default: "repo.qumulus.io/gcr-proxy"
 
-  k8s_gcr_repo_path:
+  k8s_repo_path:
     type: string
-    default: "repo.qumulus.io/k8s-gcr-proxy"
+    default: "repo.qumulus.io/k8s-proxy"
 
   existing_master_private_ip:
     type: string
@@ -152,7 +152,7 @@ parameters:
   metrics_server_chart_tag:
     type: string
     description: tag of the stable/metrics-server chart to install
-    default: v3.7.0
+    default: v3.11.0
 
   minion_flavor:
     type: string
@@ -1197,7 +1197,7 @@ resources:
           dockerhub_repo_path: {get_param: dockerhub_repo_path}
           quay_repo_path: {get_param: quay_repo_path}
           gcr_repo_path: {get_param: gcr_repo_path}
-          k8s_gcr_repo_path: {get_param: k8s_gcr_repo_path}
+          k8s_repo_path: {get_param: k8s_repo_path}
           vault_ssh_enabled: {get_param: vault_ssh_enabled}
           vault_mount_point: {get_param: vault_mount_point}
           vault_allowed_roles: {get_param: vault_allowed_roles}
