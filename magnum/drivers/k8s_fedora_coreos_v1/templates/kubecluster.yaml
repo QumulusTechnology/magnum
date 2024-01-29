@@ -50,25 +50,25 @@ parameters:
     type: string
     description: dockerhub_repo_path
     default:
-      "repo.qumulus.io/dockerhub-proxy"
+      "registry.hub.docker.com"
 
   quay_repo_path:
     type: string
     description: quay_repo_path
     default:
-      "repo.qumulus.io/quay-proxy"
+      "quay.io"
 
   gcr_repo_path:
     type: string
     description: gcr_repo_path
     default:
-      "repo.qumulus.io/gcr-proxy"
+      "gcr.io"
 
   k8s_repo_path:
     type: string
     description: k8s_repo_path
     default:
-      "repo.qumulus.io/k8s-gcr-proxy"
+      "http://registry.k8s.io"
 
   nfs_subdir_external_provisioner_enabled:
     type: boolean
@@ -527,7 +527,7 @@ parameters:
   hyperkube_prefix:
     type: string
     description: prefix to use for hyperkube images
-    default: repo.qumulus.io/dockerhub-proxy/rancher/
+    default: repo.qumulus.io/dockerhub-proxy/rancher
 
   kube_tag:
     type: string
@@ -906,13 +906,13 @@ parameters:
     description: >
       true if the auto healing feature should be enabled
     default:
-      false
+      true
 
   auto_healing_controller:
     type: string
     description: >
       The service to be deployed for auto-healing.
-    default: "draino"
+    default: "magnum-auto-healer"
 
   magnum_auto_healer_tag:
     type: string
