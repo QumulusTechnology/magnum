@@ -108,11 +108,12 @@ EOF
 # Generate server's private key and csr
 openssl genrsa -out "${SERVER_KEY}" 4096
 chmod 600 ${SERVER_KEY}
-openssl req -new -days 1000 \
+openssl req -new -days 5000 \
         -key "${SERVER_KEY}" \
         -out "${SERVER_CSR}" \
         -reqexts req_ext \
         -config "${cert_dir}/server.conf"
+
 
 # Send csr to Magnum to have it signed
 csr_req=$(python -c "import json; fp = open('${SERVER_CSR}'); print json.dumps({'cluster_uuid': '$CLUSTER_UUID', 'csr': fp.read()}); fp.close()")

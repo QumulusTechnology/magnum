@@ -278,27 +278,27 @@ data:
   config.yaml: |
     cluster-name: ${CLUSTER_UUID}
     dry-run: false
-    monitor-interval: 30s
+    monitor-interval: 15s
     check-delay-after-add: 20m
     leader-elect: true
     healthcheck:
       master:
         - type: Endpoint
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 30s
             protocol: HTTPS
             port: 6443
             endpoints: ["/healthz"]
             ok-codes: [200]
         - type: NodeCondition
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 1m
             types: ["Ready"]
             ok-values: ["True"]
       worker:
         - type: NodeCondition
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 1m
             types: ["Ready"]
             ok-values: ["True"]
     openstack:
@@ -307,7 +307,6 @@ data:
       password: ${TRUSTEE_PASSWORD}
       trust-id: ${TRUST_ID}
       region: ${REGION_NAME}
-      ca-file: /etc/kubernetes/ca-bundle.crt
 
 ---
 apiVersion: apps/v1
@@ -326,7 +325,6 @@ spec:
       labels:
         k8s-app: magnum-auto-healer
     spec:
-      hostNetwork: true
       serviceAccountName: magnum-auto-healer
       tolerations:
         - effect: NoSchedule

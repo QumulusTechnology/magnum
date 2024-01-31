@@ -26,7 +26,7 @@ cluster_template_opts = [
                        "Supported network drivers include flannel."),
                 ),
     cfg.StrOpt('kubernetes_default_network_driver',
-               default='flannel',
+               default='calico',
                help=_("Default network driver for kubernetes "
                       "cluster-templates."),
                ),

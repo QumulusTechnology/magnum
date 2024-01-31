@@ -68,7 +68,7 @@ parameters:
     type: string
     description: k8s_repo_path
     default:
-      "http://registry.k8s.io"
+      "registry.k8s.io"
 
   nfs_subdir_external_provisioner_enabled:
     type: boolean
@@ -208,7 +208,7 @@ parameters:
   metrics_server_enabled:
     type: boolean
     description: enable/disable the use of metrics-server
-    default: true
+    default: false
 
   metrics_server_chart_tag:
     type: string
@@ -420,7 +420,7 @@ parameters:
   volume_driver:
     type: string
     description: volume driver to use for container storage
-    default: ""
+    default: "cinder"
 
   region_name:
     type: string
@@ -457,7 +457,7 @@ parameters:
   kube_dashboard_enabled:
     type: boolean
     description: whether or not to enable kubernetes dashboard
-    default: True
+    default: False
 
   influx_grafana_dashboard_enabled:
     type: boolean
@@ -527,7 +527,7 @@ parameters:
   hyperkube_prefix:
     type: string
     description: prefix to use for hyperkube images
-    default: repo.qumulus.io/dockerhub-proxy/rancher
+    default: registry.hub.docker.com/rancher
 
   kube_tag:
     type: string
@@ -555,11 +555,12 @@ parameters:
     description:
       tag of the k8scloudprovider/openstack-cloud-controller-manager
       https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
-    default: v1.28.1
+    default: v1.29.0
 
   cloud_provider_enabled:
     type: boolean
     description: Enable or disable the openstack kubernetes cloud provider
+    default: true
 
   etcd_tag:
     type: string
@@ -683,7 +684,7 @@ parameters:
     type: string
     description: >
       ingress controller backend to use
-    default: ""
+    default: "octavia"
 
   ingress_controller_role:
     type: string
@@ -696,7 +697,7 @@ parameters:
     description: Octavia ingress controller docker image tag.
       tag of the k8scloudprovider/octavia-ingress-controller container
       https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
-    default: v1.28.1
+    default: v1.29.0
 
   kubelet_options:
     type: string
@@ -732,7 +733,7 @@ parameters:
     type: boolean
     description: >
       whether or not to use Octavia for LoadBalancer type service.
-    default: False
+    default: True
 
   octavia_provider:
     type: string
@@ -852,7 +853,7 @@ parameters:
   prometheus_adapter_enabled:
     type: boolean
     description: Enable or disable prometheus-adapter custom metrics.
-    default: true
+    default: false
 
   prometheus_adapter_chart_tag:
     type: string
@@ -919,7 +920,7 @@ parameters:
     description:
       tag of the k8scloudprovider/magnum-auto-healer container
       https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
-    default: v1.28.1
+    default: v1.29.0
 
   auto_scaling_enabled:
     type: boolean
@@ -940,7 +941,7 @@ parameters:
     description: tag of cinder csi plugin
       tag of the k8scloudprovider/cinder-csi-plugin container
       https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
-    default: v1.28.1
+    default: v1.29.0
 
   csi_attacher_tag:
     type: string
@@ -998,7 +999,7 @@ parameters:
     description: tag of the autoscaler container
       tag of the openstackmagnum/cluster-autoscaler container
       https://hub.docker.com/r/openstackmagnum/cluster-autoscaler/tags/
-    default: v1.26.3
+    default: v1.28.0
 
   min_node_count:
     type: number

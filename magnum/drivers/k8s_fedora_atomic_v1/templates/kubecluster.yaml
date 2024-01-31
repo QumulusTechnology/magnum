@@ -464,7 +464,7 @@ parameters:
   hyperkube_prefix:
     type: string
     description: prefix to use for hyperkube images
-    default: repo.qumulus.io/dockerhub-proxy/rancher/
+    default: registry.hub.docker.com/rancher/
 
   kube_tag:
     type: string

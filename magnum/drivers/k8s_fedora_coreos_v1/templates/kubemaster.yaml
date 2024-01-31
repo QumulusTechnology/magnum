@@ -150,7 +150,7 @@ parameters:
   docker_storage_driver:
     type: string
     description: docker storage driver name
-    default: "devicemapper"
+    default: "overlay2"
 
   cgroup_driver:
     type: string
@@ -483,7 +483,7 @@ parameters:
     type: boolean
     description: >
       whether or not to use Octavia for LoadBalancer type service.
-    default: False
+    default: True
 
   octavia_provider:
     type: string
@@ -631,12 +631,10 @@ parameters:
     type: string
     description: >
       The service to be deployed for auto-healing.
-    default: "draino"
 
   magnum_auto_healer_tag:
     type: string
     description: tag of the magnum-auto-healer service.
-    default: "v1.23.4"
 
   auto_scaling_enabled:
     type: boolean

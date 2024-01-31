@@ -347,13 +347,11 @@ parameters:
     type: boolean
     description: >
       whether or not to use Octavia for LoadBalancer type service.
-    default: False
 
   octavia_provider:
     type: string
     description: >
       Octavia provider driver to use for LoadBalancer type service.
-    default: False
 
   octavia_lb_algorithm:
     type: string
@@ -390,8 +388,6 @@ parameters:
     type: boolean
     description: >
       true if the npd service should be launched
-    default:
-      true
 
   ostree_remote:
     type: string

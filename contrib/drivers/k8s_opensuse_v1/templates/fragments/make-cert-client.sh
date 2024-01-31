@@ -92,7 +92,7 @@ EOF
 # Generate client's private key and csr
 openssl genrsa -out "${CLIENT_KEY}" 4096
 chmod 600 ${CLIENT_KEY}
-openssl req -new -days 1000 \
+openssl req -x509 -new -days 5000 \
         -key "${CLIENT_KEY}" \
         -out "${CLIENT_CSR}" \
         -reqexts req_ext \
