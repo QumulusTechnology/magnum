@@ -907,7 +907,7 @@ parameters:
     description: >
       true if the auto healing feature should be enabled
     default:
-      true
+      false
 
   auto_healing_controller:
     type: string

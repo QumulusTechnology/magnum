@@ -1648,7 +1648,7 @@ rules:
     verbs: ["list", "watch", "create", "update", "patch"]
   # Secret permission is optional.
   # Enable it if your driver needs secret.
-  # For example, `csi.storage.k8s.io/snapshotter-secret-name` is set in VolumeSnapshotClass.
+  # For example, csi.storage.k8s.io/snapshotter-secret-name is set in VolumeSnapshotClass.
   # See https://kubernetes-csi.github.io/docs/secrets-and-credentials.html for more details.
   #  - apiGroups: [""]
   #    resources: ["secrets"]
@@ -1854,7 +1854,7 @@ spec:
               mountPath: /etc/config
               readOnly: true
             - name: cacert
-              mountPath: /etc/cacert
+              mountPath: /etc/kubernetes
               readOnly: true
       volumes:
         - name: socket-dir
@@ -1863,9 +1863,9 @@ spec:
           secret:
             secretName: cinder-csi-cloud-config
         - name: cacert
-          hostPath:
-            path: /etc/cacert
-
+          secret:
+            defaultMode: 420
+            secretName: ca-bundle
 ---
 # This YAML defines all API objects to create RBAC roles for csi node plugin.
 
@@ -1992,7 +1992,7 @@ spec:
               mountPath: /etc/config
               readOnly: true
             - name: cacert
-              mountPath: /etc/cacert
+              mountPath: /etc/kubernetes
               readOnly: true
       volumes:
         - name: socket-dir
@@ -2015,8 +2015,9 @@ spec:
           secret:
             secretName: cinder-csi-cloud-config
         - name: cacert
-          hostPath:
-            path: /etc/cacert
+          secret:
+            defaultMode: 420
+            secretName: ca-bundle
 
 ---
 apiVersion: storage.k8s.io/v1
