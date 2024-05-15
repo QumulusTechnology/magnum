@@ -1,4 +1,4 @@
-step="calico-service-v3-26-x"
+step="calico-service"
 printf "Starting to run ${step}\n"
 
 set -e
@@ -7,7 +7,7 @@ set +x
 set -x
 
 if [ "$NETWORK_DRIVER" = "calico" ]; then
-    _prefix=${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/calico/}
+    _prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/calico/}
 
     CALICO_DEPLOY=/srv/magnum/kubernetes/manifests/calico-deploy.yaml
     [ -f ${CALICO_DEPLOY} ] || {
@@ -15,6 +15,8 @@ if [ "$NETWORK_DRIVER" = "calico" ]; then
     mkdir -p $(dirname ${CALICO_DEPLOY})
     set +x
     cat << EOF > ${CALICO_DEPLOY}
+---
+# Source: https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/calico.yaml
 ---
 # Source: calico/templates/calico-kube-controllers.yaml
 # This manifest creates a Pod Disruption Budget for Controller to allow K8s Cluster Autoscaler to evict
@@ -164,11 +166,11 @@ spec:
                       description: Name given to community value.
                       type: string
                     value:
-                      description: Value must be of format aa:nn or aa:nn:mm.
-                        For standard community use aa:nn format, where aa and
-                        nn are 16 bit number. For large community use aa:nn:mm
-                        format, where aa, nn and mm are 32 bit number. Where,
-                        aa is an AS Number, nn and mm are per-AS identifier.
+                      description: Value must be of format \`aa:nn\` or \`aa:nn:mm\`.
+                        For standard community use \`aa:nn\` format, where \`aa\` and
+                        \`nn\` are 16 bit number. For large community use \`aa:nn:mm\`
+                        format, where \`aa\`, \`nn\` and \`mm\` are 32 bit number. Where,
+                        \`aa\` is an AS Number, \`nn\` and \`mm\` are per-AS identifier.
                       pattern: ^(\d+):(\d+)$|^(\d+):(\d+):(\d+)$
                       type: string
                   type: object
@@ -236,12 +238,12 @@ spec:
                       type: string
                     communities:
                       description: Communities can be list of either community names
-                        already defined in Specs.Communities or community value
-                        of format aa:nn or aa:nn:mm. For standard community use
-                        aa:nn format, where aa and nn are 16 bit number. For
-                        large community use aa:nn:mm format, where aa, nn and
-                        mm are 32 bit number. Where,aa is an AS Number, nn and
-                        mm are per-AS identifier.
+                        already defined in \`Specs.Communities\` or community value
+                        of format \`aa:nn\` or \`aa:nn:mm\`. For standard community use
+                        \`aa:nn\` format, where \`aa\` and \`nn\` are 16 bit number. For
+                        large community use \`aa:nn:mm\` format, where \`aa\`, \`nn\` and
+                        \`mm\` are 32 bit number. Where,\`aa\` is an AS Number, \`nn\` and
+                        \`mm\` are per-AS identifier.
                       items:
                         type: string
                       type: array
@@ -512,8 +514,8 @@ spec:
                 type: object
               peerIP:
                 description: The IP address of the peer followed by an optional port
-                  number to peer with. If port number is given, format should be [<IPv6>]:port
-                  or <IPv4>:<port> for IPv4. If optional port number is not set,
+                  number to peer with. If port number is given, format should be \`[<IPv6>]:port\`
+                  or \`<IPv4>:<port>\` for IPv4. If optional port number is not set,
                   and this peer IP and ASNumber belongs to a calico/node with ListenPort
                   set in BGPConfiguration, then we use that port to peer.
                 type: string
@@ -1089,7 +1091,7 @@ spec:
                 description: 'BPFLogLevel controls the log level of the BPF programs
                   when in BPF dataplane mode.  One of "Off", "Info", or "Debug".  The
                   logs are emitted to the BPF trace pipe, accessible with the command
-                  tc exec bpf debug. [Default: Off].'
+                  \`tc exec bpf debug\`. [Default: Off].'
                 type: string
               bpfMapSizeConntrack:
                 description: 'BPFMapSizeConntrack sets the size for the conntrack
@@ -1586,7 +1588,7 @@ spec:
               routeTableRanges:
                 description: Calico programs additional Linux route tables for various
                   purposes. RouteTableRanges specifies a set of table index ranges
-                  that Calico should use. DeprecatesRouteTableRange, overrides RouteTableRange.
+                  that Calico should use. Deprecates\`RouteTableRange\`, overrides \`RouteTableRange\`.
                 items:
                   properties:
                     max:
@@ -1792,7 +1794,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -1923,7 +1925,7 @@ spec:
                             the rule to apply to HTTP requests that use one of the
                             listed HTTP Paths. Multiple paths are OR''d together.
                             e.g: - exact: /foo - prefix: /bar NOTE: Each entry may
-                            ONLY specify either a exact or a prefix match. The
+                            ONLY specify either a \`exact\` or a \`prefix\` match. The
                             validator will check for it.'
                           items:
                             description: 'HTTPPath specifies an HTTP path to match.
@@ -2018,7 +2020,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -2165,7 +2167,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -2296,7 +2298,7 @@ spec:
                             the rule to apply to HTTP requests that use one of the
                             listed HTTP Paths. Multiple paths are OR''d together.
                             e.g: - exact: /foo - prefix: /bar NOTE: Each entry may
-                            ONLY specify either a exact or a prefix match. The
+                            ONLY specify either a \`exact\` or a \`prefix\` match. The
                             validator will check for it.'
                           items:
                             description: 'HTTPPath specifies an HTTP path to match.
@@ -2391,7 +2393,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -3455,7 +3457,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -3586,7 +3588,7 @@ spec:
                             the rule to apply to HTTP requests that use one of the
                             listed HTTP Paths. Multiple paths are OR''d together.
                             e.g: - exact: /foo - prefix: /bar NOTE: Each entry may
-                            ONLY specify either a exact or a prefix match. The
+                            ONLY specify either a \`exact\` or a \`prefix\` match. The
                             validator will check for it.'
                           items:
                             description: 'HTTPPath specifies an HTTP path to match.
@@ -3681,7 +3683,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -3828,7 +3830,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -3959,7 +3961,7 @@ spec:
                             the rule to apply to HTTP requests that use one of the
                             listed HTTP Paths. Multiple paths are OR''d together.
                             e.g: - exact: /foo - prefix: /bar NOTE: Each entry may
-                            ONLY specify either a exact or a prefix match. The
+                            ONLY specify either a \`exact\` or a \`prefix\` match. The
                             validator will check for it.'
                           items:
                             description: 'HTTPPath specifies an HTTP path to match.
@@ -4054,7 +4056,7 @@ spec:
                             will be selected by the rule. \n For NetworkPolicy, an
                             empty NamespaceSelector implies that the Selector is limited
                             to selecting only workload endpoints in the same namespace
-                            as the NetworkPolicy. \n For NetworkPolicy, global()
+                            as the NetworkPolicy. \n For NetworkPolicy, \`global()\`
                             NamespaceSelector implies that the Selector is limited
                             to selecting only GlobalNetworkSet or HostEndpoint. \n
                             For GlobalNetworkPolicy, an empty NamespaceSelector implies
@@ -4790,6 +4792,11 @@ spec:
             # Enable IPIP
             - name: CALICO_IPV4POOL_IPIP
               value: "${CALICO_IPV4POOL_IPIP}"
+            # The default IPv4 pool to create on startup if none exists. Pod IPs will be
+            # chosen from this range. Changing this value after installation will have
+            # no effect. This should fall within '--cluster-cidr'.
+            - name: CALICO_IPV4POOL_CIDR
+              value: ${CALICO_IPV4POOL}
             # Enable or Disable VXLAN on the default IP pool.
             - name: CALICO_IPV4POOL_VXLAN
               value: "Never"
@@ -4816,10 +4823,10 @@ spec:
                   key: veth_mtu
             # The default IPv4 pool to create on startup if none exists. Pod IPs will be
             # chosen from this range. Changing this value after installation will have
-            # no effect. This should fall within --cluster-cidr.
-            - name: CALICO_IPV4POOL_CIDR
-              value: "${CALICO_IPV4POOL}"
-            # Disable file logging so kubectl logs works.
+            # no effect. This should fall within \`--cluster-cidr\`.
+            # - name: CALICO_IPV4POOL_CIDR
+            #   value: "192.168.0.0/16"
+            # Disable file logging so \`kubectl logs\` works.
             - name: CALICO_DISABLE_FILE_LOGGING
               value: "true"
             # Set Felix endpoint to host default action to ACCEPT.

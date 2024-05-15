@@ -87,7 +87,7 @@ EOF
     # Generate client's private key and csr
     $ssh_cmd openssl genrsa -out "${_KEY}" 4096
     chmod 400 "${_KEY}"
-    $ssh_cmd openssl req -new -days 1000 \
+    $ssh_cmd openssl req -new -days 5000 \
             -key "${_KEY}" \
             -out "${_CSR}" \
             -reqexts req_ext \

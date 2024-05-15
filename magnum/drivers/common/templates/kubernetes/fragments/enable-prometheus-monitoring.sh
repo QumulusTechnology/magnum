@@ -232,7 +232,7 @@ spec:
       serviceAccountName: prometheus
       containers:
       - name: prometheus
-        image: ${CONTAINER_INFRA_PREFIX:-docker.io/prom/}prometheus:${PROMETHEUS_TAG}
+        image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/prom/}prometheus:${PROMETHEUS_TAG}
         args:
           - '-storage.local.retention=6h'
           - '-storage.local.memory-chunks=500000'
@@ -343,7 +343,7 @@ spec:
         role: db
     spec:
       containers:
-        - image: ${CONTAINER_INFRA_PREFIX:-docker.io/grafana/}grafana:${GRAFANA_TAG}
+        - image: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/grafana/}grafana:${GRAFANA_TAG}
           imagePullPolicy: IfNotPresent
           name: grafana
           env:
@@ -414,7 +414,7 @@ spec:
       priorityClassName: system-node-critical
       containers:
         - name: prometheus-node-exporter
-          image: "${CONTAINER_INFRA_PREFIX:-docker.io/prom/}node-exporter:v0.15.2"
+          image: "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/prom/}node-exporter:v0.15.2"
           imagePullPolicy: "IfNotPresent"
           args:
             - --path.procfs=/host/proc

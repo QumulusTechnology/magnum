@@ -37,7 +37,7 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
             ${ssh_cmd} podman rm ${service}
         done
 
-        ${ssh_cmd} podman rmi ${CONTAINER_INFRA_PREFIX:-${HYPERKUBE_PREFIX}}hyperkube:${KUBE_TAG}
+        ${ssh_cmd} podman rmi ${CONTAINER_INFRA_PREFIX:-${HYPERKUBE_PREFIX}}/hyperkube:${KUBE_TAG}
         echo "KUBE_TAG=$new_kube_tag" >> /etc/sysconfig/heat-params
 
         for service in ${SERVICE_LIST}; do
@@ -45,7 +45,7 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
         done
 
         i=0
-        until [ "`${ssh_cmd} podman image exists ${CONTAINER_INFRA_PREFIX:-${HYPERKUBE_PREFIX}}hyperkube:${new_kube_tag} && echo $?`" = 0 ]
+        until [ "`${ssh_cmd} podman image exists ${CONTAINER_INFRA_PREFIX:-${HYPERKUBE_PREFIX}}/hyperkube:${new_kube_tag} && echo $?`" = 0 ]
         do
             i=$((i+1))
             [ $i -lt 30 ] || break;
@@ -53,7 +53,7 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
             sleep 5s
         done
 
-        KUBE_DIGEST=$($ssh_cmd podman image inspect ${CONTAINER_INFRA_PREFIX:-${HYPERKUBE_PREFIX}}hyperkube:${new_kube_tag} --format "{{.Digest}}")
+        KUBE_DIGEST=$($ssh_cmd podman image inspect ${CONTAINER_INFRA_PREFIX:-${HYPERKUBE_PREFIX}}/hyperkube:${new_kube_tag} --format "{{.Digest}}")
         if [ -n "${new_kube_image_digest}"  ] && [ "${new_kube_image_digest}" != "${KUBE_DIGEST}" ]; then
             printf "The sha256 ${KUBE_DIGEST} of current hyperkube image cannot match the given one: ${new_kube_image_digest}."
             exit 1
@@ -78,11 +78,11 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
         done
 
         for service in ${SERVICE_LIST}; do
-            ${ssh_cmd} atomic pull --storage ostree "${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag}"
+            ${ssh_cmd} atomic pull --storage ostree "${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag}"
         done
 
         for service in ${SERVICE_LIST}; do
-            ${ssh_cmd} atomic containers update --rebase ${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag} ${service}
+            ${ssh_cmd} atomic containers update --rebase ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}${service_image_mapping[${service}]}:${new_kube_tag} ${service}
         done
 
         for service in ${SERVICE_LIST}; do
@@ -92,7 +92,7 @@ if [ "${new_kube_tag}" != "${KUBE_TAG}" ]; then
         ${ssh_cmd} ${kubecontrol} uncordon ${INSTANCE_NAME}
 
         for service in ${SERVICE_LIST}; do
-            ${ssh_cmd} atomic --assumeyes images "delete ${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}${service_image_mapping[${service}]}:${KUBE_TAG}"
+            ${ssh_cmd} atomic --assumeyes images "delete ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}${service_image_mapping[${service}]}:${KUBE_TAG}"
         done
 
         ${ssh_cmd} atomic images prune
