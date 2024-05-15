@@ -3,7 +3,7 @@ printf "Starting to run ${step}\n"
 
 . /etc/sysconfig/heat-params
 
-_gcr_prefix=${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/}
+_k8s_prefix=${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/}
 
 # Either auto scaling or auto healing we need CA to be deployed
 if [[ "$(echo $AUTO_HEALING_ENABLED | tr '[:upper:]' '[:lower:]')" = "true" || "$(echo $NPD_ENABLED | tr '[:upper:]' '[:lower:]')" = "true" ]]; then
@@ -81,12 +81,12 @@ spec:
     spec:
       containers:
       - name: node-problem-detector
-        image: ${_gcr_prefix}node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
+        image: ${_k8s_prefix}node-problem-detector/node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
         command:
         - "/bin/sh"
         - "-c"
         # Pass both config to support both journald and syslog.
-        - "exec /node-problem-detector --logtostderr --system-log-monitors=/config/kernel-monitor.json,/config/kernel-monitor-filelog.json,/config/docker-monitor.json,/config/docker-monitor-filelog.json 2>&1 | tee /var/log/node-problem-detector.log"
+        - "exec /node-problem-detector --logtostderr --config.system-log-monitor=/config/kernel-monitor.json,/config/kernel-monitor-filelog.json,/config/docker-monitor.json,/config/docker-monitor-filelog.json 2>&1 | tee /var/log/node-problem-detector.log"
         securityContext:
           privileged: true
         resources:
@@ -138,7 +138,7 @@ fi
 
 function enable_draino {
     echo "Installing draino"
-    _docker_draino_prefix=${CONTAINER_INFRA_PREFIX:-docker.io/planetlabs/}
+    _docker_draino_prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/planetlabs/}
     draino_manifest=/srv/magnum/kubernetes/manifests/draino.yaml
 
     [ -f ${draino_manifest} ] || {
@@ -239,7 +239,7 @@ EOF
 
 function enable_magnum_auto_healer {
     echo "Installing magnum_auto_healer"
-    image_prefix=${CONTAINER_INFRA_PREFIX:-registry.k8s.io/provider-os/}
+    image_prefix=${CONTAINER_INFRA_PREFIX:-${K8S_REPO_PATH}/provider-os/}
     image_prefix=${image_prefix%/}
     magnum_auto_healer_manifest=/srv/magnum/kubernetes/manifests/magnum_auto_healer.yaml
 
@@ -278,27 +278,27 @@ data:
   config.yaml: |
     cluster-name: ${CLUSTER_UUID}
     dry-run: false
-    monitor-interval: 30s
+    monitor-interval: 15s
     check-delay-after-add: 20m
     leader-elect: true
     healthcheck:
       master:
         - type: Endpoint
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 30s
             protocol: HTTPS
             port: 6443
             endpoints: ["/healthz"]
             ok-codes: [200]
         - type: NodeCondition
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 30s
             types: ["Ready"]
             ok-values: ["True"]
       worker:
         - type: NodeCondition
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 30s
             types: ["Ready"]
             ok-values: ["True"]
     openstack:

@@ -25,6 +25,9 @@ $ssh_cmd rm -rf /opt/cni/*
 $ssh_cmd mkdir -p /opt/cni/bin
 $ssh_cmd mkdir -p /etc/cni/net.d/
 
+echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_instances = 512" >> /etc/sysctl.conf
+
 if [ "$NETWORK_DRIVER" = "calico" ]; then
     echo "net.ipv4.conf.all.rp_filter = 1" >> /etc/sysctl.conf
     $ssh_cmd sysctl -p
@@ -252,7 +255,7 @@ TimeoutStartSec=10min
 WantedBy=multi-user.target
 EOF
 else
-    _prefix=${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}
+    _prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}
     _addtl_mounts=',{"type":"bind","source":"/opt/cni","destination":"/opt/cni","options":["bind","rw","slave","mode=777"]},{"type":"bind","source":"/var/lib/docker","destination":"/var/lib/docker","options":["bind","rw","slave","mode=755"]}'
     mkdir -p /srv/magnum/kubernetes/
     cat > /srv/magnum/kubernetes/install-kubernetes.sh <<EOF
@@ -432,7 +435,7 @@ sed -i '/^KUBE_SCHEDULER_ARGS=/ s#=.*#="--leader-elect=true --kubeconfig=/etc/ku
 
 $ssh_cmd mkdir -p /etc/kubernetes/manifests
 KUBELET_ARGS="--register-node=true --pod-manifest-path=/etc/kubernetes/manifests --hostname-override=${INSTANCE_NAME}"
-KUBELET_ARGS="${KUBELET_ARGS} --pod-infra-container-image=${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}pause:3.1"
+KUBELET_ARGS="${KUBELET_ARGS} --pod-infra-container-image=${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}pause:3.1"
 KUBELET_ARGS="${KUBELET_ARGS} --cluster_dns=${DNS_SERVICE_IP} --cluster_domain=${DNS_CLUSTER_DOMAIN}"
 KUBELET_ARGS="${KUBELET_ARGS} --resolv-conf=/run/systemd/resolve/resolv.conf"
 KUBELET_ARGS="${KUBELET_ARGS} --volume-plugin-dir=/var/lib/kubelet/volumeplugins"

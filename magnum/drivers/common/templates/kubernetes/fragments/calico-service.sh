@@ -1,4 +1,4 @@
-step="calico-service-v3-26-x"
+step="calico-service"
 printf "Starting to run ${step}\n"
 
 set -e

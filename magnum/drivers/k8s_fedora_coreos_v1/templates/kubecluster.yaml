@@ -36,16 +36,82 @@ conditions:
     - create_cluster_resources
     - is_worker
 
-  calico_v3_26:
-    yaql:
-      expression: $.data.calico_tag.startsWith("v3.26.")
-      data:
-        calico_tag: {get_param: calico_tag}
-
-
 parameters:
-
   # needs to become a list if we want to join master nodes?
+
+  dockerhub_repo_path:
+    type: string
+    description: dockerhub_repo_path
+    default:
+      "registry.hub.docker.com"
+
+  quay_repo_path:
+    type: string
+    description: quay_repo_path
+    default:
+      "quay.io"
+
+  gcr_repo_path:
+    type: string
+    description: gcr_repo_path
+    default:
+      "gcr.io"
+
+  k8s_repo_path:
+    type: string
+    description: k8s_repo_path
+    default:
+      "registry.k8s.io"
+
+  nfs_subdir_external_provisioner_enabled:
+    type: boolean
+    description: >
+      true if nfs subdir external provisioner helm chart to be installed. requires nfs_server and nfs_mount_point to be set
+    default:
+      false
+
+  nfs_server:
+    type: string
+    description: >
+      nfs_server
+    default:
+      ""
+
+  nfs_mount_point:
+    type: string
+    description: >
+      nfs_mount_point
+    default:
+      ""
+
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+    default:
+      false
+
+  vault_url:
+    type: string
+    description: >
+      vault server url
+    default:
+      ""
+
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+    default:
+      ""
+
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+    default:
+      ""
+
   existing_master_private_ip:
     type: string
     default: ""
@@ -135,12 +201,12 @@ parameters:
   metrics_server_enabled:
     type: boolean
     description: enable/disable the use of metrics-server
-    default: true
+    default: false
 
   metrics_server_chart_tag:
     type: string
     description: tag of the stable/metrics-server chart to install
-    default: v3.7.0
+    default: v3.8.3
 
   minion_flavor:
     type: string
@@ -189,7 +255,7 @@ parameters:
   network_driver:
     type: string
     description: network driver to use for instantiating container networks
-    default: flannel
+    default: calico
 
   flannel_network_cidr:
     type: string
@@ -227,7 +293,7 @@ parameters:
     type: string
     description: >
       List of admission control plugins to activate
-    default: "NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,StorageObjectInUseProtection,PersistentVolumeClaimResize,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,RuntimeClass"
+    default: "CertificateApproval,CertificateSigning,CertificateSubjectRestriction,DefaultIngressClass,DefaultStorageClass,DefaultTolerationSeconds,LimitRanger,MutatingAdmissionWebhook,NamespaceLifecycle,PersistentVolumeClaimResize,PodSecurity,Priority,ResourceQuota,RuntimeClass,ServiceAccount,StorageObjectInUseProtection,TaintNodesByCondition,ValidatingAdmissionWebhook"
 
   kube_allow_priv:
     type: string
@@ -347,7 +413,7 @@ parameters:
   volume_driver:
     type: string
     description: volume driver to use for container storage
-    default: ""
+    default: "cinder"
 
   region_name:
     type: string
@@ -384,7 +450,7 @@ parameters:
   kube_dashboard_enabled:
     type: boolean
     description: whether or not to enable kubernetes dashboard
-    default: True
+    default: False
 
   influx_grafana_dashboard_enabled:
     type: boolean
@@ -454,49 +520,50 @@ parameters:
   hyperkube_prefix:
     type: string
     description: prefix to use for hyperkube images
-    default: docker.io/rancher/
+    default: registry.hub.docker.com/rancher/
 
   kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.29.3-rancher1
 
   master_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.29.3-rancher1
 
   minion_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.29.3-rancher1
 
   cloud_provider_tag:
     type: string
     description:
       tag of the k8scloudprovider/openstack-cloud-controller-manager
-      https://hub.docker.com/r/k8scloudprovider/openstack-cloud-controller-manager/tags/
-    default: v1.23.1
+      https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
+    default: v1.30.0
 
   cloud_provider_enabled:
     type: boolean
     description: Enable or disable the openstack kubernetes cloud provider
+    default: True
 
   etcd_tag:
     type: string
     description: tag of the etcd system container
-    default: v3.4.6
+    default: v3.5.13
 
   coredns_tag:
     type: string
     description: tag for coredns
-    default: 1.6.6
+    default: 1.11.1
 
   flannel_tag:
     type: string
@@ -511,18 +578,18 @@ parameters:
   kube_version:
     type: string
     description: version of kubernetes used for kubernetes cluster
-    default: v1.18.16
+    default: v1.29.3
 
   kube_dashboard_version:
     type: string
     description: version of kubernetes dashboard used for kubernetes cluster
-    default: v2.0.0
+    default: v2.6.1
 
   metrics_scraper_tag:
     type: string
     description: >
       Tag of metrics-scraper for kubernetes dashboard.
-    default: v1.0.4
+    default: v1.0.8
 
   insecure_registry_url:
     type: string
@@ -583,12 +650,12 @@ parameters:
   calico_tag:
     type: string
     description: tag of the calico containers used to provision the calico node
-    default: v3.21.2
+    default: v3.28.0
 
   calico_kube_controllers_tag:
     type: string
     description: tag of the kube_controllers used to provision the calico node
-    default: v1.0.3
+    default: v3.28.0
 
   calico_ipv4pool:
     type: string
@@ -610,7 +677,7 @@ parameters:
     type: string
     description: >
       ingress controller backend to use
-    default: ""
+    default: "octavia"
 
   ingress_controller_role:
     type: string
@@ -622,8 +689,8 @@ parameters:
     type: string
     description: Octavia ingress controller docker image tag.
       tag of the k8scloudprovider/octavia-ingress-controller container
-      https://hub.docker.com/r/k8scloudprovider/octavia-ingress-controller/tags/
-    default: v1.18.0
+      https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
+    default: v1.30.0
 
   kubelet_options:
     type: string
@@ -659,7 +726,7 @@ parameters:
     type: boolean
     description: >
       whether or not to use Octavia for LoadBalancer type service.
-    default: False
+    default: True
 
   octavia_provider:
     type: string
@@ -724,8 +791,8 @@ parameters:
     type: string
     description:
       tag of the k8scloudprovider/k8s-keystone-auth container
-      https://hub.docker.com/r/k8scloudprovider/k8s-keystone-auth/tags/
-    default: v1.18.0
+      https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
+    default: v1.30.0
 
   monitoring_enabled:
     type: boolean
@@ -774,17 +841,17 @@ parameters:
   prometheus_operator_chart_tag:
     type: string
     description: The stable/prometheus-operator chart version to use.
-    default: v8.12.13
+    default: v12.11.13
 
   prometheus_adapter_enabled:
     type: boolean
     description: Enable or disable prometheus-adapter custom metrics.
-    default: true
+    default: false
 
   prometheus_adapter_chart_tag:
     type: string
     description: The stable/prometheus-adapter chart version to use.
-    default: 1.4.0
+    default: 3.0.0
 
   prometheus_adapter_configmap:
     type: string
@@ -804,14 +871,14 @@ parameters:
   helm_client_sha256:
     type: string
     description: sha256 of helm client tarball
-    default: "018f9908cb950701a5d59e757653a790c66d8eda288625dbb185354ca6f41f6b"
+    default: "4ae30e48966aba5f807a4e140dad6736ee1a392940101e4d79ffb4ee86200a9e"
 
   helm_client_tag:
     type: string
     description: >
       release tag of helm client
       https://github.com/helm/helm/releases
-    default: "v3.2.1"
+    default: "v3.7.2"
 
   auto_healing_enabled:
     type: boolean
@@ -824,14 +891,14 @@ parameters:
     type: string
     description: >
       The service to be deployed for auto-healing.
-    default: "draino"
+    default: "magnum-auto-healer"
 
   magnum_auto_healer_tag:
     type: string
     description:
       tag of the k8scloudprovider/magnum-auto-healer container
-      https://hub.docker.com/r/k8scloudprovider/magnum-auto-healer/tags/
-    default: v1.18.0
+      https://github.com/kubernetes/k8s.io/blob/main/registry.k8s.io/images/k8s-staging-provider-os/images.yaml
+    default: v1.30.0
 
   auto_scaling_enabled:
     type: boolean
@@ -852,43 +919,43 @@ parameters:
     description: tag of cinder csi plugin
       tag of the k8scloudprovider/cinder-csi-plugin container
       https://hub.docker.com/r/k8scloudprovider/cinder-csi-plugin/tags/
-    default: v1.23.0
+    default: v1.30.0
 
   csi_attacher_tag:
     type: string
     description: tag of csi attacher
-    default: v3.3.0
+    default: v4.5.1
 
   csi_provisioner_tag:
     type: string
     description: tag of csi provisioner
-    default: v3.0.0
+    default: v4.0.1
 
   csi_snapshotter_tag:
     type: string
     description: tag of csi snapshotter
-    default: v4.2.1
+    default: v7.0.2
 
   csi_resizer_tag:
     type: string
     description: tag of csi resizer
-    default: v1.3.0
+    default: v1.10.1
 
   csi_node_driver_registrar_tag:
     type: string
     description: tag of csi node driver registrar
-    default: v2.4.0
+    default: v2.10.1
 
   csi_liveness_probe_tag:
     type: string
     description: tag of cinder csi liveness probe
       tag of the k8s.gcr.io/sig-storage/liveness-probe container
-    default: v2.5.0
+    default: v2.12.0
 
   node_problem_detector_tag:
     type: string
     description: tag of the node problem detector container
-    default: v0.6.2
+    default: v0.8.18
 
   nginx_ingress_controller_tag:
     type: string
@@ -910,7 +977,7 @@ parameters:
     description: tag of the autoscaler container
       tag of the openstackmagnum/cluster-autoscaler container
       https://hub.docker.com/r/openstackmagnum/cluster-autoscaler/tags/
-    default: v1.18.1
+    default: v1.28.0
 
   min_node_count:
     type: number
@@ -972,12 +1039,12 @@ parameters:
   container_runtime:
     type: string
     description: The container runtime to install
-    default: 'host-docker'
+    default: 'containerd'
 
   containerd_version:
     type: string
     description: The containerd version to download from https://github.com/containerd/containerd/releases
-    default: '1.4.4'
+    default: '1.7.16'
 
   containerd_tarball_url:
     type: string
@@ -987,7 +1054,7 @@ parameters:
   containerd_tarball_sha256:
     type: string
     description: sha256 of the target containerd tarball.
-    default: '96641849cb78a0a119223a427dfdc1ade88412ef791a14193212c8c8e29d447b'
+    default: '576876a0223946e25e27e555437179bfbc43bd1ba785358f1b2f08064f333b8f'
 
   post_install_manifest_url:
     type: string
@@ -1242,6 +1309,17 @@ resources:
             list_join:
               - '-'
               - [{ get_param: 'OS::stack_name' }, 'master', '%index%']
+          nfs_subdir_external_provisioner_enabled: {get_param: nfs_subdir_external_provisioner_enabled}
+          nfs_server: {get_param: nfs_server}
+          nfs_mount_point: {get_param: nfs_mount_point}
+          vault_ssh_enabled: {get_param: vault_ssh_enabled}
+          vault_url: {get_param: vault_url}
+          vault_mount_point: {get_param: vault_mount_point}
+          vault_allowed_roles: {get_param: vault_allowed_roles}
+          dockerhub_repo_path: {get_param: dockerhub_repo_path}
+          quay_repo_path: {get_param: quay_repo_path}
+          gcr_repo_path: {get_param: gcr_repo_path}
+          k8s_repo_path: {get_param: k8s_repo_path}
           nodegroup_role: {get_param: master_role}
           nodegroup_name: {get_param: master_nodegroup_name}
           heapster_enabled: {get_param: heapster_enabled}
@@ -1404,10 +1482,7 @@ resources:
             - "source /etc/bashrc"
             - get_file: ../../common/templates/kubernetes/fragments/kube-apiserver-to-kubelet-role.sh
             - get_file: ../../common/templates/kubernetes/fragments/core-dns-service.sh
-            - if:
-                - calico_v3_26
-                - get_file: ../../common/templates/kubernetes/fragments/calico-service-v3-26-x.sh
-                - get_file: ../../common/templates/kubernetes/fragments/calico-service-v3-21-x.sh
+            - get_file: ../../common/templates/kubernetes/fragments/calico-service.sh
             - get_file: ../../common/templates/kubernetes/fragments/flannel-service.sh
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/enable-prometheus-monitoring.sh}
@@ -1428,6 +1503,7 @@ resources:
             - get_file: ../../common/templates/kubernetes/fragments/enable-cinder-csi.sh
             # Helm Based Installation Configuration Scripts
             - get_file: ../../common/templates/kubernetes/fragments/install-helm.sh
+            - get_file: ../../common/templates/kubernetes/helm/enable-nfs-subdir-provisioner.sh
             - get_file: ../../common/templates/kubernetes/helm/metrics-server.sh
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/helm/prometheus-operator.sh}
@@ -1473,6 +1549,17 @@ resources:
             list_join:
               - '-'
               - [{ get_param: 'OS::stack_name' }, 'node', '%index%']
+          vault_ssh_enabled: {get_param: vault_ssh_enabled}
+          vault_url: {get_param: vault_url}
+          vault_mount_point: {get_param: vault_mount_point}
+          vault_allowed_roles: {get_param: vault_allowed_roles}
+          dockerhub_repo_path: {get_param: dockerhub_repo_path}
+          quay_repo_path: {get_param: quay_repo_path}
+          gcr_repo_path: {get_param: gcr_repo_path}
+          k8s_repo_path: {get_param: k8s_repo_path}
+          nfs_subdir_external_provisioner_enabled: {get_param: nfs_subdir_external_provisioner_enabled}
+          nfs_server: {get_param: nfs_server}
+          nfs_mount_point: {get_param: nfs_mount_point}
           prometheus_monitoring: {get_param: prometheus_monitoring}
           nodegroup_role: {get_param: worker_role}
           nodegroup_name: {get_param: worker_nodegroup_name}

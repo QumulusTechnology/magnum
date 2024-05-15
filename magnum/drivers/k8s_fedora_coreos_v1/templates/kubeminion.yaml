@@ -7,6 +7,55 @@ description: >
 
 parameters:
 
+
+  dockerhub_repo_path:
+    type: string
+    description: dockerhub_repo_path
+
+  quay_repo_path:
+    type: string
+    description: quay_repo_path
+
+  gcr_repo_path:
+    type: string
+    description: gcr_repo_path
+
+  k8s_repo_path:
+    type: string
+    description: k8s_repo_path
+
+  vault_ssh_enabled:
+    type: boolean
+    description: >
+      true if vault ssh authentication. required vault_url to be set
+  vault_url:
+    type: string
+    description: >
+      vault server url
+  vault_mount_point:
+    type: string
+    description: >
+      vault mount point
+  vault_allowed_roles:
+    type: string
+    description: >
+      vault allowed_roles
+  nfs_subdir_external_provisioner_enabled:
+    type: boolean
+    description: >
+      true if nfs subdir external provisioner helm chart to be installed. requires nfs_server and nfs_mount_point to be set
+  nfs_server:
+    type: string
+    description: >
+      nfs_server
+  nfs_mount_point:
+    type: string
+    description: >
+      nfs_mount_point
+  name:
+    type: string
+    description: server name
+
   name:
     type: string
     description: server name
@@ -292,13 +341,13 @@ parameters:
     type: boolean
     description: >
       whether or not to use Octavia for LoadBalancer type service.
-    default: False
+    default: True
 
   octavia_provider:
     type: string
     description: >
       Octavia provider driver to use for LoadBalancer type service.
-    default: False
+    default: amphora
 
   octavia_lb_algorithm:
     type: string
@@ -329,7 +378,7 @@ parameters:
     type: string
     description: >
       The service to be deployed for auto-healing.
-    default: "draino"
+    default: "magnum-auto-healer"
 
   npd_enabled:
     type: boolean
@@ -412,6 +461,7 @@ resources:
                   __HOSTNAME__: {get_param: name}
                   __SSH_KEY_VALUE__: {get_param: ssh_public_key}
                   __OPENSTACK_CA__: {get_param: openstack_ca}
+                  __DOCKERHUB_REPO_PATH__: {get_param: dockerhub_repo_path}
                   __CONTAINER_INFRA_PREFIX__:
                     if:
                       - equals:

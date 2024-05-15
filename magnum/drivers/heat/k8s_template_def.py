@@ -268,7 +268,7 @@ class K8sTemplateDefinition(template_def.BaseTemplateDefinition):
             extra_params[label] = labels.get(label)
 
         ingress_controller = cluster.labels.get('ingress_controller',
-                                                '').lower()
+                                                'octavia').lower()
         if (ingress_controller == 'octavia'
                 and not extra_params['octavia_enabled']):
             raise exception.InvalidParameterValue(

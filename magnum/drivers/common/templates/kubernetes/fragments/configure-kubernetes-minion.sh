@@ -27,6 +27,9 @@ $ssh_cmd mkdir -p /opt/cni/bin
 $ssh_cmd mkdir -p /etc/cni/net.d/
 _addtl_mounts=',{"type":"bind","source":"/opt/cni","destination":"/opt/cni","options":["bind","rw","slave","mode=777"]},{"type":"bind","source":"/var/lib/docker","destination":"/var/lib/docker","options":["bind","rw","slave","mode=755"]}'
 
+echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_instances = 512" >> /etc/sysctl.conf
+
 if [ "$NETWORK_DRIVER" = "calico" ]; then
     echo "net.ipv4.conf.all.rp_filter = 1" >> /etc/sysctl.conf
     # NOTE(flwang): The default value for vm.max_map_count is too low, update
@@ -151,7 +154,7 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
 else
-    _prefix=${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}
+    _prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}
     _addtl_mounts=',{"type":"bind","source":"/opt/cni","destination":"/opt/cni","options":["bind","rw","slave","mode=777"]},{"type":"bind","source":"/var/lib/docker","destination":"/var/lib/docker","options":["bind","rw","slave","mode=755"]}'
     mkdir -p /srv/magnum/kubernetes/
     cat > /srv/magnum/kubernetes/install-kubernetes.sh <<EOF
@@ -271,7 +274,7 @@ if [ -f /etc/sysconfig/docker ] ; then
     sed -i -E 's/^OPTIONS=("|'"'"')/OPTIONS=\1'"${DOCKER_OPTIONS}"' /' /etc/sysconfig/docker
 fi
 
-KUBELET_ARGS="${KUBELET_ARGS} --pod-infra-container-image=${CONTAINER_INFRA_PREFIX:-gcr.io/google_containers/}pause:3.1"
+KUBELET_ARGS="${KUBELET_ARGS} --pod-infra-container-image=${CONTAINER_INFRA_PREFIX:-${GCR_REPO_PATH}/google_containers/}pause:3.1"
 
 KUBELET_ARGS="${KUBELET_ARGS} --client-ca-file=${CERT_DIR}/ca.crt --tls-cert-file=${CERT_DIR}/kubelet.crt --tls-private-key-file=${CERT_DIR}/kubelet.key"
 

@@ -116,7 +116,7 @@ ${APP_INGRESS_BASIC_AUTH_ANNOTATIONS}
       #   - alertmanager.example.com
     alertmanagerSpec:
       image:
-        repository: ${CONTAINER_INFRA_PREFIX:-quay.io/prometheus/}alertmanager
+        repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/prometheus/}alertmanager
       logFormat: json
       externalUrl: https://${CLUSTER_ROOT_DOMAIN_NAME}/alertmanager
       # routePrefix: /alertmanager
@@ -295,13 +295,13 @@ ${APP_INGRESS_ANNOTATIONS}
     #   memory: 10Mi
     logFormat: json
     image:
-      repository: ${CONTAINER_INFRA_PREFIX:-quay.io/coreos/}prometheus-operator
+      repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/coreos/}prometheus-operator
     configmapReloadImage:
-      repository: ${CONTAINER_INFRA_PREFIX:-quay.io/coreos/}configmap-reload
+      repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/coreos/}configmap-reload
     prometheusConfigReloaderImage:
-      repository: ${CONTAINER_INFRA_PREFIX:-quay.io/coreos/}prometheus-config-reloader
+      repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/coreos/}prometheus-config-reloader
     hyperkubeImage:
-      repository: ${CONTAINER_INFRA_PREFIX:-k8s.gcr.io/}hyperkube
+      repository: ${CONTAINER_INFRA_PREFIX:-${K8S_GCR_REPO_PATH}/}hyperkube
 
   prometheus:
     ingress:
@@ -335,7 +335,7 @@ ${APP_INGRESS_BASIC_AUTH_ANNOTATIONS}
       scrapeInterval: 30s
       evaluationInterval: 30s
       image:
-        repository: ${CONTAINER_INFRA_PREFIX:-quay.io/prometheus/}prometheus
+        repository: ${CONTAINER_INFRA_PREFIX:-${QUAY_REPO_PATH}/prometheus/}prometheus
       retention: 14d
       externalLabels:
         cluster_uuid: ${CLUSTER_UUID}

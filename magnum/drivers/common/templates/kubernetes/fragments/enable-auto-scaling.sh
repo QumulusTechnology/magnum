@@ -3,7 +3,7 @@ printf "Starting to run ${step}\n"
 
 . /etc/sysconfig/heat-params
 
-_docker_ca_prefix=${CONTAINER_INFRA_PREFIX:-docker.io/openstackmagnum/}
+_docker_ca_prefix=${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/openstackmagnum/}
 
 auto_scaling_enabled=$(echo $AUTO_SCALING_ENABLED | tr '[:upper:]' '[:lower:]')
 auto_healing_enabled=$(echo $AUTO_HEALING_ENABLED | tr '[:upper:]' '[:lower:]')
@@ -50,7 +50,7 @@ rules:
     verbs: ["create"]
   # read-only access to cluster state
   - apiGroups: [""]
-    resources: ["services", "replicationcontrollers", "persistentvolumes", "persistentvolumeclaims"]
+    resources: ["services", "replicationcontrollers", "persistentvolumes", "persistentvolumeclaims","namespaces"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["apps"]
     resources: ["daemonsets", "replicasets"]
@@ -65,7 +65,7 @@ rules:
     resources: ["poddisruptionbudgets"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses", "csinodes"]
+    resources: ["storageclasses", "csinodes","csistoragecapacities","csidrivers"]
     verbs: ["get", "list", "watch"]
   # misc access
   - apiGroups: [""]

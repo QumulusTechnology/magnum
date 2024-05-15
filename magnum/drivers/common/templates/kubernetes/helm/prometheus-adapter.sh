@@ -21,7 +21,7 @@ EOF
     cat << EOF >> ${HELM_CHART_DIR}/values.yaml
 prometheus-adapter:
   image:
-    repository: ${CONTAINER_INFRA_PREFIX:-docker.io/directxman12/}k8s-prometheus-adapter-${ARCH}
+    repository: ${CONTAINER_INFRA_PREFIX:-${DOCKERHUB_REPO_PATH}/directxman12/}k8s-prometheus-adapter-${ARCH}
   priorityClassName: "system-cluster-critical"
   prometheus:
     url: http://web.tcp.prometheus-prometheus.kube-system.svc.cluster.local
