@@ -3,19 +3,31 @@ name: 'Build and Push Kolla Images'
 on:
   push:
     branches:
-      - qumulus/*
-    tags:
-      - 'qumulus/**'
-    paths-ignore:
-      - '**.md'
+      - main
+      - staging
+      - qa
+      - dev
+      - experimental
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        type: choice
+        description: 'Branch to build'
+        options:
+        - main
+        - staging
+        - qa
+        - dev
+        - experimental
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.repository }} @ ${{ github.base_ref || github.ref_name }}'
-  cancel-in-progress: false
+  group: '${{ github.workflow }} @ ${{ github.repository }} @ ${{ github.event.inputs.branch || github.base_ref || github.ref_name }}'
+  cancel-in-progress: true
 
 jobs:
   kolla_build:
@@ -23,25 +35,57 @@ jobs:
       group: prod
 
     steps:
+
+      - uses: QumulusTechnology/vault-setup-action@v2
+        with:
+          aws_account_data: ${{ secrets.AWS_ACCOUNT_DATA }}
+          vault_addr: ${{ secrets.VAULT_ADDR }}
+          platform: qcp
+          secrets: |
+            secret/data/qcp/global/harbor/prod/github-user username | REPO_USERNAME ;
+            secret/data/qcp/global/harbor/prod/github-user password | REPO_PASSWORD ;
+            secret/data/qcp/global/harbor/prod/github-user address | REPO_ADDRESS
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
 
       - name: Set Release version
-        if: startsWith(github.ref, 'refs/tags/qumulus/')
         run: |
-          echo "RELEASE_VERSION=true" >> $GITHUB_ENV
-          FULL_TAG=${GITHUB_REF#refs/tags/}
-          OPENSTACK_VERSION=$(echo "$FULL_TAG"|cut -d "/" -f 2)
-          RELEASE=$(echo "$FULL_TAG"|cut -d "/" -f 3)
-          echo "OPENSTACK_VERSION=$OPENSTACK_VERSION"  >> $GITHUB_ENV
-          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
 
-      - name: Set Branch version
-        if: startsWith(github.ref, 'refs/heads/qumulus/')
-        run: |
-          echo "RELEASE_VERSION=false" >> $GITHUB_ENV
-          OPENSTACK_VERSION=$(echo ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}|cut -d "/" -f 2)
-          echo "OPENSTACK_VERSION=$OPENSTACK_VERSION"  >> $GITHUB_ENV
+          if [ "$BRANCH" == "main" ]; then
+            echo "OPENSTACK_VERSION=2023.2" >> $GITHUB_ENV
+            echo "BASE_OS_TAG=22.04" >> $GITHUB_ENV
+          elif [ "$BRANCH" == "staging" ]; then
+            echo "OPENSTACK_VERSION=2023.2" >> $GITHUB_ENV
+            echo "BASE_OS_TAG=22.04" >> $GITHUB_ENV
+          elif [ "$BRANCH" == "qa" ]; then
+            echo "OPENSTACK_VERSION=2023.2" >> $GITHUB_ENV
+            echo "BASE_OS_TAG=22.04" >> $GITHUB_ENV
+          elif [ "$BRANCH" == "experimental" ]; then
+            echo "OPENSTACK_VERSION=2023.2" >> $GITHUB_ENV
+            echo "BASE_OS_TAG=22.04" >> $GITHUB_ENV
+          else
+            echo "OPENSTACK_VERSION=2023.2" >> $GITHUB_ENV
+            echo "BASE_OS_TAG=22.04" >> $GITHUB_ENV
+          fi
+
+          if [ "$BRANCH" == "main" ]; then
+            TAG=main
+          elif [ "$BRANCH" == "staging" ]; then
+            TAG=staging
+          elif [ "$BRANCH" == "qa" ]; then
+            TAG=qa
+          elif [ "$BRANCH" == "dev" ]; then
+            TAG=dev
+          elif [ "$BRANCH" == "experimental" ]; then
+            TAG=experimental
+          else
+            TAG=dev_${BRANCH}
+          fi
+
+          echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Set GITHUB Environment Variables
         run: |
@@ -50,58 +94,50 @@ jobs:
           echo "GITHUB_ACTIONS_WORKFLOW_ATEMPT=${{ github.run_attempt }}" >> $GITHUB_ENV
           echo "GITHUB_ACTIONS_WORKFLOW_RUN_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
           echo "GITHUB_ACTIONS_AUTHOR=${{ github.actor }}" >> $GITHUB_ENV
-          echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
-          echo "HARBOR_USERNAME=robot\$github" >> $GITHUB_ENV
-          echo "HARBOR_ADDR_DEV=repo.qumulus.dev" >> $GITHUB_ENV
-          echo "HARBOR_ADDR_PROD=repo.qumulus.io" >> $GITHUB_ENV
 
-      - name: Login to Harbor Hub Dev
+      - name: Login to Harbor Hub
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.HARBOR_ADDR_DEV }}
-          username: ${{ env.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_TOKEN_DEV }}
-
-      - name: Login to Harbor Hub Prod
-        uses: docker/login-action@v2
-        if: env.RELEASE_VERSION  == 'true'
-        with:
-          registry: ${{ env.HARBOR_ADDR_PROD }}
-          username: ${{ env.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_TOKEN_PROD }}
+          registry: ${{ env.REPO_ADDRESS }}
+          username: ${{ env.REPO_USERNAME }}
+          password: ${{ env.REPO_PASSWORD }}
 
       - name: Install Kolla
         run: |
           sudo apt update
-          sudo apt install -y bash python3 python3-pip git python3-dev libffi-dev gcc libssl-dev python3-venv
+          sudo apt install -y bash python3 python3-pip git python3-dev python3-docker libffi-dev gcc libssl-dev python3-venv
           python3 -m venv kolla
           source kolla/bin/activate
           pip install -U pip
-          pip install git+https://github.com/QumulusTechnology/kolla@qumulus/${OPENSTACK_VERSION}
+          pip install docker
+          pip install git+https://github.com/QumulusTechnology/kolla@${BRANCH}
 
       - name: Create kolla-build.conf
         run: |
           CWD="$(pwd)"
           sudo mkdir -p /etc/kolla
           sudo bash -c "cat << EOF > /etc/kolla/kolla-build.conf
+
           [DEFAULT]
           base = ubuntu
-          base_tag = 22.04
-          namespace = ${OPENSTACK_VERSION}
+          base_tag = ${BASE_OS_TAG}
+          namespace = kolla
           push = true
-          threads = 8
-          push_threads = 8
-          registry = ${HARBOR_ADDR_DEV}/kolla
+          skip_existing = false
+          threads = 16
+          push_threads = 4
+          registry = ${REPO_ADDRESS}/kolla
           install_type = source
-          tag = latest
+          tag = ${TAG}
           template_override = /etc/kolla/template-overrides.j2
           openstack_release = ${OPENSTACK_VERSION}
           docker_healthchecks = true
-          [${REPO_NAME}-base]
+          network_mode = host
+          [${REPOSITORY}-base]
           type = local
           location = ${CWD}
-          # network_mode = host
           EOF"
+
 
       - name: Create template-overrides.j2
         run: |
@@ -111,26 +147,24 @@ jobs:
           {% block base_ubuntu_package_sources_list %}
           {% endblock %}
 
+          {% block ${REPOSITORY}_base_footer %}
+
+          {% endblock %}
           EOF'
 
       - name: Build docker images
         run: |
           source kolla/bin/activate
-          pip3 install docker
-          kolla-build  ${REPO_NAME}
+          kolla-build ${REPOSITORY}
 
       - name: Tag and push docker images
         run: |
           timestamp=$(date +%Y%m%d%H%M%S)
-          for i in $(docker images --format '{{.Repository}}' | grep "/${OPENSTACK_VERSION}/"); do
-            docker tag ${i}:latest ${HARBOR_ADDR_DEV}/kolla/${OPENSTACK_VERSION}/${REPO_NAME}:${timestamp}
-            docker image push --all-tags ${i}
-            if [ "${RELEASE_VERSION}" == "true" ]; then
-              docker tag ${i}:latest ${HARBOR_ADDR_DEV}/kolla/${OPENSTACK_VERSION}/${REPO_NAME}:v${RELEASE}
-              docker tag ${i}:latest ${HARBOR_ADDR_PROD}/kolla/${OPENSTACK_VERSION}/${REPO_NAME}:${timestamp}
-              docker tag ${i}:latest ${HARBOR_ADDR_PROD}/kolla/${OPENSTACK_VERSION}/${REPO_NAME}:latest
-              docker tag ${i}:latest ${HARBOR_ADDR_PROD}/kolla/${OPENSTACK_VERSION}/${REPO_NAME}:v${RELEASE}
-              docker image push --all-tags ${HARBOR_ADDR_PROD}/kolla/${OPENSTACK_VERSION}/${REPO_NAME}
+          for i in $(docker images --format '{{.Repository}}' | grep "/${TAG}/"); do
+            image=${i##*/}
+            docker tag ${i}:${TAG} ${REPO_ADDRESS}/kolla/${image}:${TAG}_${timestamp}
+            if [ "${TAG}" == "main" ]; then
+              docker tag ${i}:${TAG} ${REPO_ADDRESS}/kolla/${image}:latest
             fi
             docker image push --all-tags ${i}
           done
