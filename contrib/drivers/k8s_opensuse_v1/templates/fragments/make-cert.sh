@@ -108,7 +108,7 @@ EOF
 # Generate server's private key and csr
 openssl genrsa -out "${SERVER_KEY}" 4096
 chmod 600 ${SERVER_KEY}
-openssl req -new -days 1000 \
+openssl req -new -days 5000 \
         -key "${SERVER_KEY}" \
         -out "${SERVER_CSR}" \
         -reqexts req_ext \

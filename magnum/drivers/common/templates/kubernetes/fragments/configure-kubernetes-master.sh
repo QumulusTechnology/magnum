@@ -25,10 +25,13 @@ $ssh_cmd rm -rf /opt/cni/*
 $ssh_cmd mkdir -p /opt/cni/bin
 $ssh_cmd mkdir -p /etc/cni/net.d/
 
+echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_instances = 512" >> /etc/sysctl.conf
+
 if [ "$NETWORK_DRIVER" = "calico" ]; then
     echo "net.ipv4.conf.all.rp_filter = 1" >> /etc/sysctl.conf
     $ssh_cmd sysctl -p
-    if [ "`systemctl status NetworkManager.service | grep -o "Active: active"`" = "Active: active" ]; then
+    if [ "`$ssh_cmd systemctl status NetworkManager.service | grep -o "Active: active"`" = "Active: active" ]; then
         CALICO_NM=/etc/NetworkManager/conf.d/calico.conf
         [ -f ${CALICO_NM} ] || {
         echo "Writing File: $CALICO_NM"
@@ -38,7 +41,7 @@ if [ "$NETWORK_DRIVER" = "calico" ]; then
 unmanaged-devices=interface-name:cali*;interface-name:tunl*
 EOF
 }
-        systemctl restart NetworkManager
+        $ssh_cmd systemctl restart NetworkManager
     fi
 elif [ "$NETWORK_DRIVER" = "flannel" ]; then
     $ssh_cmd modprobe -a vxlan br_netfilter

@@ -14,4 +14,4 @@
 
 version = '1.0.0'
 driver = 'k8s_fedora_coreos_v1'
-container_version = '1.12.6'
+container_version = '2.1.1'

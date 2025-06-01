@@ -36,9 +36,9 @@ conditions:
     - create_cluster_resources
     - is_worker
 
-  calico_v3_26:
+  calico_v3_21:
     yaql:
-      expression: $.data.calico_tag.startsWith("v3.26.")
+      expression: $.data.calico_tag.startsWith("v3.21.")
       data:
         calico_tag: {get_param: calico_tag}
 
@@ -140,7 +140,7 @@ parameters:
   metrics_server_chart_tag:
     type: string
     description: tag of the stable/metrics-server chart to install
-    default: v3.7.0
+    default: v3.12.2
 
   minion_flavor:
     type: string
@@ -384,7 +384,7 @@ parameters:
   kube_dashboard_enabled:
     type: boolean
     description: whether or not to enable kubernetes dashboard
-    default: True
+    default: False
 
   influx_grafana_dashboard_enabled:
     type: boolean
@@ -461,28 +461,28 @@ parameters:
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.30.5-rancher1
 
   master_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.30.5-rancher1
 
   minion_kube_tag:
     type: string
     description:
       tag of the k8s containers used to provision the kubernetes cluster
       https://github.com/kubernetes/kubernetes/releases
-    default: v1.23.3-rancher1
+    default: v1.30.5-rancher1
 
   cloud_provider_tag:
     type: string
     description:
       tag of the k8scloudprovider/openstack-cloud-controller-manager
       https://hub.docker.com/r/k8scloudprovider/openstack-cloud-controller-manager/tags/
-    default: v1.23.1
+    default: v1.32.0
 
   cloud_provider_enabled:
     type: boolean
@@ -491,12 +491,12 @@ parameters:
   etcd_tag:
     type: string
     description: tag of the etcd system container
-    default: v3.4.6
+    default: v3.6.0
 
   coredns_tag:
     type: string
     description: tag for coredns
-    default: 1.6.6
+    default: 1.12.1
 
   flannel_tag:
     type: string
@@ -511,18 +511,18 @@ parameters:
   kube_version:
     type: string
     description: version of kubernetes used for kubernetes cluster
-    default: v1.18.16
+    default: v1.30.5
 
   kube_dashboard_version:
     type: string
     description: version of kubernetes dashboard used for kubernetes cluster
-    default: v2.0.0
+    default: v7.13.0
 
   metrics_scraper_tag:
     type: string
     description: >
       Tag of metrics-scraper for kubernetes dashboard.
-    default: v1.0.4
+    default: v1.2.2
 
   insecure_registry_url:
     type: string
@@ -583,7 +583,7 @@ parameters:
   calico_tag:
     type: string
     description: tag of the calico containers used to provision the calico node
-    default: v3.21.2
+    default: v3.30.1
 
   calico_ipv4pool:
     type: string
@@ -618,7 +618,7 @@ parameters:
     description: Octavia ingress controller docker image tag.
       tag of the k8scloudprovider/octavia-ingress-controller container
       https://hub.docker.com/r/k8scloudprovider/octavia-ingress-controller/tags/
-    default: v1.18.0
+    default: v1.32.0
 
   kubelet_options:
     type: string
@@ -696,7 +696,7 @@ parameters:
   grafana_tag:
     type: string
     description: tag of grafana container
-    default: 5.1.5
+    default: 12.0.1
 
   heat_container_agent_tag:
     type: string
@@ -720,7 +720,7 @@ parameters:
     description:
       tag of the k8scloudprovider/k8s-keystone-auth container
       https://hub.docker.com/r/k8scloudprovider/k8s-keystone-auth/tags/
-    default: v1.18.0
+    default: v1.32.0
 
   monitoring_enabled:
     type: boolean
@@ -769,7 +769,7 @@ parameters:
   prometheus_operator_chart_tag:
     type: string
     description: The stable/prometheus-operator chart version to use.
-    default: v8.12.13
+    default: v27.18.0
 
   prometheus_adapter_enabled:
     type: boolean
@@ -779,7 +779,7 @@ parameters:
   prometheus_adapter_chart_tag:
     type: string
     description: The stable/prometheus-adapter chart version to use.
-    default: 1.4.0
+    default: 4.14.1
 
   prometheus_adapter_configmap:
     type: string
@@ -799,14 +799,14 @@ parameters:
   helm_client_sha256:
     type: string
     description: sha256 of helm client tarball
-    default: "018f9908cb950701a5d59e757653a790c66d8eda288625dbb185354ca6f41f6b"
+    default: "b1c7e8e261fd30f34c617282813ecafc63628fcd59a255a9fc51b1fe43394c05"
 
   helm_client_tag:
     type: string
     description: >
       release tag of helm client
       https://github.com/helm/helm/releases
-    default: "v3.2.1"
+    default: "v3.18.1"
 
   auto_healing_enabled:
     type: boolean
@@ -819,14 +819,14 @@ parameters:
     type: string
     description: >
       The service to be deployed for auto-healing.
-    default: "draino"
+    default: "magnum-auto-healer"
 
   magnum_auto_healer_tag:
     type: string
     description:
       tag of the k8scloudprovider/magnum-auto-healer container
       https://hub.docker.com/r/k8scloudprovider/magnum-auto-healer/tags/
-    default: v1.18.0
+    default: v1.32.0
 
   auto_scaling_enabled:
     type: boolean
@@ -847,65 +847,65 @@ parameters:
     description: tag of cinder csi plugin
       tag of the k8scloudprovider/cinder-csi-plugin container
       https://hub.docker.com/r/k8scloudprovider/cinder-csi-plugin/tags/
-    default: v1.23.0
+    default: v1.32.0
 
   csi_attacher_tag:
     type: string
     description: tag of csi attacher
-    default: v3.3.0
+    default: v4.8.1
 
   csi_provisioner_tag:
     type: string
     description: tag of csi provisioner
-    default: v3.0.0
+    default: v5.2.0
 
   csi_snapshotter_tag:
     type: string
     description: tag of csi snapshotter
-    default: v4.2.1
+    default: v8.2.0
 
   csi_resizer_tag:
     type: string
     description: tag of csi resizer
-    default: v1.3.0
+    default: v1.13.2
 
   csi_node_driver_registrar_tag:
     type: string
     description: tag of csi node driver registrar
-    default: v2.4.0
+    default: v2.14.0
 
   csi_liveness_probe_tag:
     type: string
     description: tag of cinder csi liveness probe
       tag of the k8s.gcr.io/sig-storage/liveness-probe container
-    default: v2.5.0
+    default: v2.15.0
 
   node_problem_detector_tag:
     type: string
     description: tag of the node problem detector container
-    default: v0.6.2
+    default: v0.8.19
 
   nginx_ingress_controller_tag:
     type: string
     description: nginx ingress controller docker image tag
-    default: 0.32.0
+    default: 1.12.2
 
   nginx_ingress_controller_chart_tag:
     type: string
     description: nginx ingress controller helm chart tag
-    default: 4.0.17
+    default: 4.12.2
 
   draino_tag:
     type: string
     description: tag of the draino container
-    default: abf028a
+    default: e0d5277
 
   autoscaler_tag:
     type: string
     description: tag of the autoscaler container
       tag of the openstackmagnum/cluster-autoscaler container
       https://hub.docker.com/r/openstackmagnum/cluster-autoscaler/tags/
-    default: v1.18.1
+    default: v1.28.0
 
   min_node_count:
     type: number
@@ -967,12 +967,12 @@ parameters:
   container_runtime:
     type: string
     description: The container runtime to install
-    default: 'host-docker'
+    default: 'containerd'
 
   containerd_version:
     type: string
     description: The containerd version to download from https://github.com/containerd/containerd/releases
-    default: '1.4.4'
+    default: '2.1.1'
 
   containerd_tarball_url:
     type: string
@@ -982,7 +982,7 @@ parameters:
   containerd_tarball_sha256:
     type: string
     description: sha256 of the target containerd tarball.
-    default: '96641849cb78a0a119223a427dfdc1ade88412ef791a14193212c8c8e29d447b'
+    default: '0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5'
 
   post_install_manifest_url:
     type: string
@@ -1399,9 +1399,9 @@ resources:
             - get_file: ../../common/templates/kubernetes/fragments/kube-apiserver-to-kubelet-role.sh
             - get_file: ../../common/templates/kubernetes/fragments/core-dns-service.sh
             - if:
-                - calico_v3_26
-                - get_file: ../../common/templates/kubernetes/fragments/calico-service-v3-26-x.sh
+                - calico_v3_21
                 - get_file: ../../common/templates/kubernetes/fragments/calico-service-v3-21-x.sh
+                - get_file: ../../common/templates/kubernetes/fragments/calico-service.sh
             - get_file: ../../common/templates/kubernetes/fragments/flannel-service.sh
             - str_replace:
                 template: {get_file: ../../common/templates/kubernetes/fragments/enable-prometheus-monitoring.sh}

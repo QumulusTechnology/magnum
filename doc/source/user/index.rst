@@ -1214,7 +1214,7 @@ _`kube_tag`
   Train default: v1.15.7
   Ussuri default: v1.18.2
   Victoria default: v1.18.16
-  Yoga default: v1.23.3-rancher1
+  Yoga default: v1.30.5-rancher1
 
 _`heapster_enabled`
   heapster_enabled is used to enable disable the installation of heapster.
@@ -1567,11 +1567,11 @@ The supported (tested) versions of Kubernetes and Operating Systems are:
 +-------------------+-------------------+-------------------------------+
 | 17.0.0 (Bobcat)   | v1.26.8-rancher1  | fedora-coreos-38.20230806.3.0 |
 +-------------------+-------------------+-------------------------------+
-| 16.0.0 (Antelope) | v1.23.3-rancher1  | fedora-coreos-35.20220116.3.0 |
+| 16.0.0 (Antelope) | v1.30.5-rancher1  | fedora-coreos-35.20220116.3.0 |
 +-------------------+-------------------+-------------------------------+
-| 15.0.0 (Zed)      | v1.23.3-rancher1  | fedora-coreos-35.20220116.3.0 |
+| 15.0.0 (Zed)      | v1.30.5-rancher1  | fedora-coreos-35.20220116.3.0 |
 +-------------------+-------------------+-------------------------------+
-| 14.0.0 (Yoga)     | v1.23.3-rancher1  | fedora-coreos-35.20220116.3.0 |
+| 14.0.0 (Yoga)     | v1.30.5-rancher1  | fedora-coreos-35.20220116.3.0 |
 +-------------------+-------------------+-------------------------------+
 | 13.0.0 (Xena)     | v1.21.x           | fedora-coreos-31.20200323.3.2 |
 +-------------------+-------------------+-------------------------------+

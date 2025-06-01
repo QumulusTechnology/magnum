@@ -81,7 +81,7 @@ spec:
     spec:
       containers:
       - name: node-problem-detector
-        image: ${_gcr_prefix}node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
+        image: ${CONTAINER_INFRA_PREFIX:-registry.k8s.io/node-problem-detector/}node-problem-detector:${NODE_PROBLEM_DETECTOR_TAG}
         command:
         - "/bin/sh"
         - "-c"
@@ -278,27 +278,27 @@ data:
   config.yaml: |
     cluster-name: ${CLUSTER_UUID}
     dry-run: false
-    monitor-interval: 30s
+    monitor-interval: 15s
     check-delay-after-add: 20m
     leader-elect: true
     healthcheck:
       master:
         - type: Endpoint
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 30s
             protocol: HTTPS
             port: 6443
             endpoints: ["/healthz"]
             ok-codes: [200]
         - type: NodeCondition
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 1m
             types: ["Ready"]
             ok-values: ["True"]
       worker:
         - type: NodeCondition
           params:
-            unhealthy-duration: 3m
+            unhealthy-duration: 1m
             types: ["Ready"]
             ok-values: ["True"]
     openstack:
