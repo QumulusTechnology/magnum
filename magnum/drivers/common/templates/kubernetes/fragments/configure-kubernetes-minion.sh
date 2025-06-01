@@ -27,6 +27,9 @@ $ssh_cmd mkdir -p /opt/cni/bin
 $ssh_cmd mkdir -p /etc/cni/net.d/
 _addtl_mounts=',{"type":"bind","source":"/opt/cni","destination":"/opt/cni","options":["bind","rw","slave","mode=777"]},{"type":"bind","source":"/var/lib/docker","destination":"/var/lib/docker","options":["bind","rw","slave","mode=755"]}'
 
+echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_instances = 512" >> /etc/sysctl.conf
+
 if [ "$NETWORK_DRIVER" = "calico" ]; then
     echo "net.ipv4.conf.all.rp_filter = 1" >> /etc/sysctl.conf
     # NOTE(flwang): The default value for vm.max_map_count is too low, update

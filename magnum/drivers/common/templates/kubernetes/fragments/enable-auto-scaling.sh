@@ -50,7 +50,7 @@ rules:
     verbs: ["create"]
   # read-only access to cluster state
   - apiGroups: [""]
-    resources: ["services", "replicationcontrollers", "persistentvolumes", "persistentvolumeclaims"]
+    resources: ["services", "replicationcontrollers", "persistentvolumes", "persistentvolumeclaims","namespaces"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["apps"]
     resources: ["daemonsets", "replicasets"]
@@ -65,7 +65,7 @@ rules:
     resources: ["poddisruptionbudgets"]
     verbs: ["get", "list", "watch"]
   - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses", "csinodes"]
+    resources: ["storageclasses", "csinodes","csistoragecapacities","csidrivers"]
     verbs: ["get", "list", "watch"]
   # misc access
   - apiGroups: [""]

@@ -31,7 +31,7 @@ if [ "${CONTAINER_RUNTIME}" = "containerd"  ] ; then
     $ssh_cmd tar xzvf /srv/magnum/cri-containerd.tar.gz -C / --no-same-owner --touch --no-same-permissions
     $ssh_cmd systemctl daemon-reload
     $ssh_cmd systemctl enable containerd
-    $ssh_cmd systemctl start containerd
+    $ssh_cmd systemctl restart containerd
 else
     # CONTAINER_RUNTIME=host-docker
     $ssh_cmd systemctl disable docker

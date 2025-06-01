@@ -24,29 +24,23 @@ metadata:
     kubernetes.io/bootstrapping: rbac-defaults
   name: system:coredns
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - endpoints
-  - services
-  - pods
-  - namespaces
-  verbs:
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  verbs:
-  - get
-- apiGroups:
-  - discovery.k8s.io
-  resources:
-  - endpointslices
-  verbs:
-  - list
-  - watch
+  - apiGroups:
+    - ""
+    resources:
+    - endpoints
+    - services
+    - pods
+    - namespaces
+    verbs:
+    - list
+    - watch
+  - apiGroups:
+    - discovery.k8s.io
+    resources:
+    - endpointslices
+    verbs:
+    - list
+    - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -74,8 +68,10 @@ data:
   Corefile: |
     .:53 {
         errors
-        log
-        health
+        health {
+          lameduck 5s
+        }
+        ready
         kubernetes ${DNS_CLUSTER_DOMAIN} ${PORTAL_NETWORK_CIDR} ${PODS_NETWORK_CIDR} {
            pods verified
            fallthrough in-addr.arpa ip6.arpa
@@ -87,7 +83,6 @@ data:
         reload
         loadbalance
     }
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -97,8 +92,12 @@ metadata:
   labels:
     k8s-app: kube-dns
     kubernetes.io/name: "CoreDNS"
+    app.kubernetes.io/name: coredns
 spec:
   replicas: 2
+  # replicas: not specified here:
+  # 1. Default is 1.
+  # 2. Will be tuned in real time if DNS horizontal auto-scaling is turned on.
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -106,24 +105,29 @@ spec:
   selector:
     matchLabels:
       k8s-app: kube-dns
+      app.kubernetes.io/name: coredns
   template:
     metadata:
       labels:
         k8s-app: kube-dns
+        app.kubernetes.io/name: coredns
     spec:
       priorityClassName: system-cluster-critical
       serviceAccountName: coredns
       tolerations:
-        # Make sure the pod can be scheduled on master kubelet.
-        - effect: NoSchedule
-          operator: Exists
-        # Mark the pod as a critical add-on for rescheduling.
-        - key: CriticalAddonsOnly
-          operator: Exists
-        - effect: NoExecute
-          operator: Exists
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
+      affinity:
+         podAntiAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+           - labelSelector:
+               matchExpressions:
+               - key: k8s-app
+                 operator: In
+                 values: ["kube-dns"]
+             topologyKey: kubernetes.io/hostname
       containers:
       - name: coredns
         image: ${_dns_prefix}coredns:${COREDNS_TAG}
@@ -139,8 +143,6 @@ spec:
         - name: config-volume
           mountPath: /etc/coredns
           readOnly: true
-        - name: tmp
-          mountPath: /tmp
         ports:
         - containerPort: 53
           name: dns
@@ -170,13 +172,11 @@ spec:
           failureThreshold: 5
         readinessProbe:
           httpGet:
-            path: /health
-            port: 8080
+            path: /ready
+            port: 8181
             scheme: HTTP
       dnsPolicy: Default
       volumes:
-        - name: tmp
-          emptyDir: {}
         - name: config-volume
           configMap:
             name: coredns
@@ -196,9 +196,11 @@ metadata:
     k8s-app: kube-dns
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
+    app.kubernetes.io/name: coredns
 spec:
   selector:
     k8s-app: kube-dns
+    app.kubernetes.io/name: coredns
   clusterIP: ${DNS_SERVICE_IP}
   ports:
   - name: dns
@@ -210,6 +212,7 @@ spec:
   - name: metrics
     port: 9153
     protocol: TCP
+
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -228,11 +231,11 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["nodes"]
-    verbs: ["list"]
+    verbs: ["list","get","watch"]
   - apiGroups: [""]
     resources: ["replicationcontrollers/scale"]
     verbs: ["get", "update"]
-  - apiGroups: ["extensions"]
+  - apiGroups: ["extensions","apps"]
     resources: ["deployments/scale", "replicasets/scale"]
     verbs: ["get", "update"]
 # Remove the configmaps rule once below issue is fixed:
@@ -280,7 +283,7 @@ spec:
       priorityClassName: system-cluster-critical
       containers:
       - name: autoscaler
-        image: ${_autoscaler_prefix}cluster-proportional-autoscaler-${ARCH}:1.1.2
+        image: ${_autoscaler_prefix}cluster-proportional-autoscaler:v1.9.0
         resources:
             requests:
                 cpu: "20m"
@@ -300,6 +303,7 @@ spec:
       - key: "CriticalAddonsOnly"
         operator: "Exists"
       serviceAccountName: kube-dns-autoscaler
+
 EOF
 }
 

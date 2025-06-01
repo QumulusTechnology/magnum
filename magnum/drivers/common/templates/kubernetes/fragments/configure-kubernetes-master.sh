@@ -25,6 +25,9 @@ $ssh_cmd rm -rf /opt/cni/*
 $ssh_cmd mkdir -p /opt/cni/bin
 $ssh_cmd mkdir -p /etc/cni/net.d/
 
+echo "fs.inotify.max_user_watches = 524288" >> /etc/sysctl.conf
+echo "fs.inotify.max_user_instances = 512" >> /etc/sysctl.conf
+
 if [ "$NETWORK_DRIVER" = "calico" ]; then
     echo "net.ipv4.conf.all.rp_filter = 1" >> /etc/sysctl.conf
     $ssh_cmd sysctl -p
